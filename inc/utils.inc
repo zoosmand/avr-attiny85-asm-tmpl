@@ -9,7 +9,7 @@
 
 
 ;/*********************************** LED Blink *********************************/
-LED0_BLINK:
+LED_BLINK:
   sbis LEDPIN, LED0PIN
   rjmp _LED0PIN_H
   cbi LEDPORT, LED0PIN

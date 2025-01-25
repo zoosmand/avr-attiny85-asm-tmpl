@@ -40,4 +40,5 @@ _TIMER0_COMPB:
 ;_WDT:                ; This interrupt handled in another file.
 _USI_START:
 _USI_OVF:
-  rjmp 0
+
+rjmp 0

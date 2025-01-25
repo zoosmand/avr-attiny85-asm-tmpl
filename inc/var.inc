@@ -9,12 +9,17 @@
 
 
 ;/******************************** VARIABLES & DATA ******************************/
+; Static data stored with the code
 .cseg
 ;  WH1602A_symb: .db "Hallo!!!"
 
+
+; SRAM data segment
 .dseg
 .org 0x0060
-;  lcdAddr:    .byte 1
- 
+SecCnt:  .dw 0x0000
+
+
+; EEPROM data
 .eseg
 ;  StartParam:	.db "Ready"

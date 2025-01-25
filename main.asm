@@ -57,11 +57,19 @@ MAIN:
   rjmp _SLEEP
 
   _AWAKE:
+    nop
+
+  ; _INC_SEC_CNT:
     sbrs _EREG_, _SQF_
+    rjmp _LED_BLINK
+
+    ; TODO Increment seconds counter
+
     cbr _EREG_, (1<<_SQF_)
 
+  _LED_BLINK:
     sbrc _EREG_, _LBF_
-    rcall LED0_BLINK
+    rcall LED_BLINK
 
     sbr _EREG_, (1<<_SMF_)  ; Set Sleep Mode flag
 

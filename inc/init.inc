@@ -22,7 +22,6 @@ INIT_FLAGS:
   clr _EREG_
   ; sbr _EREG_, (1<<_MIF_)
 
-cli
 ;/************************************ Timer *************************************/
 ;/*     (1/8000000)*1024*256 = 32.768ms      */
 INIT_TIMER:
@@ -35,7 +34,12 @@ INIT_TIMER:
   out TIMSK, tmp
   clr tmp ; 256
   out TCNT0, tmp ; 11.9.4 p.80
+  sei
 
+; Init Second Counter
+  ld SecCnt, X+
+
+cli
 
 ;/*********************************** MCU ***************************************/
 INIT_MCU:
