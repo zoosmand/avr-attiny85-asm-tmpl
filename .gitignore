@@ -1,0 +1,9 @@
+*.atsln
+*.asmproj
+*.atsuo
+*.xml
+*.tmp
+*.obj
+*.lss
+*.map
+.vs
