@@ -19,11 +19,12 @@ LED_BLINK:
     sbi LEDPORT, LED0PIN
   
   _RETURN:
-    cbr _EREG_, (1<<_LBF_)
+    ; cbr _EREG_, (1<<_LBF_)
     ret
 
 
 ;/************************** Turn the MCU into SLEEP Mode ***********************/
-_SLEEP:
-  sei     ; Enable interrapts to wake up the MCU
-  sleep
+SLEEP_MODE:
+  ; sei     ; Enable interrapts to wake up the MCU
+  ; sleep
+  ret

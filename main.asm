@@ -38,9 +38,10 @@
 
 
 ;/******************************* Event REGistry Flags ***************************/
-.equ _SQF_    = 0       ; System Quant Interval Flag
-.equ _SMF_    = 1       ; Sleep Mode Flag
-.equ _LBF_    = 2       ; LED Blink Flag
+.equ _QIF_    = 0       ; System Quant Interval Flag
+.equ _SIF_    = 1       ; Second Interval Flag
+.equ _SMF_    = 2       ; Sleep Mode Flag
+.equ _LBF_    = 3       ; LED Blink Flag
 
 .cseg
 .org 0
@@ -54,26 +55,51 @@
 MAIN:
   sbrs _EREG_, _SMF_
   rjmp _AWAKE
-  rjmp _SLEEP
+  rcall SLEEP_MODE
 
   _AWAKE:
     nop
 
-  ; _INC_SEC_CNT:
-    sbrs _EREG_, _SQF_
+  _INC_QNT_CNT:
+    sbrs _EREG_, _QIF_
     rjmp _LED_BLINK
+    INC_CNT QntCnt
+    cbr _EREG_, (1<<_QIF_)
 
-    ; TODO Increment seconds counter
+  _INC_SEC_CNT:
+    ldi XH, high(QntCnt)
+    ldi XL, low(QntCnt)
 
-    cbr _EREG_, (1<<_SQF_)
+    ld tmpH, X+
+    ld tmpL, X
+
+    ; TODO use defonition and macro function to set up the counter level
+    cpi tmpL, 0x10
+    brne _LED_BLINK
+    cpi tmpH, 0x01
+    brne _LED_BLINK
+
+    clr R1
+    st X, R1
+    st -X, R1
+    sbr _EREG_, (1<<_SIF_)
 
   _LED_BLINK:
-    sbrc _EREG_, _LBF_
+    sbrs _EREG_, _LBF_
+    rjmp _INC_SEC
     rcall LED_BLINK
+    cbr _EREG_, (1<<_LBF_)
 
+  _INC_SEC:
+    sbrs _EREG_, _SIF_
+    rjmp _SLEEP
+    INC_CNT SecCnt
+    cbr _EREG_, (1<<_SIF_)
+    sbr _EREG_, (1<<_LBF_)  ; Command to run LED Blink
+
+  _SLEEP:
     sbr _EREG_, (1<<_SMF_)  ; Set Sleep Mode flag
-
-
+  
   rjmp MAIN
   rjmp THE_END
 

@@ -43,7 +43,7 @@ _TIMER0_OVF:
   clr R1
   out TCNT0, R1
 
-  sbr _EREG_, (1<<_SQF_)
+  sbr _EREG_, (1<<_QIF_)
   cbr _EREG_, (1<<_SMF_)
  
   _TIMER0_OVF_exit:

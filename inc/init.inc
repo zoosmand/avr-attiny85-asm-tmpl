@@ -36,8 +36,8 @@ INIT_TIMER:
   out TCNT0, tmp ; 11.9.4 p.80
   sei
 
-; Init Second Counter
-  ld SecCnt, X+
+; Init/erase SRAM data
+INIT_DATA SRAM_START, 8
 
 cli
 
