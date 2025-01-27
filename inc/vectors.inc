@@ -30,14 +30,14 @@ _INT0:
 _PCINT0:
 _TIMER1_COMPA:
 _TIMER1_OVF:
-;_TIMER0_OVF:         ; This interrupt handled in another file.
+;_TIMER0_OVF:         ; This interrupt code is moved to interrupts.inc file.
 _EE_RDY:
 _ANA_COMP:
 _ADC:
 _TIMER1_COMPB:
 _TIMER0_COMPA:
 _TIMER0_COMPB:
-;_WDT:                ; This interrupt handled in another file.
+;_WDT:                ; This interrupt code is moved to interrupts.inc file.
 _USI_START:
 _USI_OVF:
 
