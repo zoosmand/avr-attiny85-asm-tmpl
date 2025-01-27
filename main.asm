@@ -37,6 +37,10 @@
 .equ LED0PIN  = PB1
 
 
+;/*************************** Definitions and Constanrs **************************/
+#define SEC_THRESHOLD 1000
+
+
 ;/******************************* Event REGistry Flags ***************************/
 .equ _QIF_    = 0       ; System Quant Interval Flag
 .equ _SIF_    = 1       ; Second Interval Flag
@@ -51,6 +55,7 @@
 .include "./inc/init.inc"
 
 
+
 ;/*********************************** MAIN LOOP **********************************/
 MAIN:
   sbrs _EREG_, _SMF_
@@ -58,47 +63,15 @@ MAIN:
   rcall SLEEP_MODE
 
   _AWAKE:
-    nop
 
-  _INC_QNT_CNT:
-    sbrs _EREG_, _QIF_
-    rjmp _LED_BLINK
-    INC_CNT QntCnt
-    cbr _EREG_, (1<<_QIF_)
+    rcall INC_QNT_CNT
+    rcall INC_SEC_CNT
+    rcall INC_SEC
 
-  _INC_SEC_CNT:
-    ldi XH, high(QntCnt)
-    ldi XL, low(QntCnt)
-
-    ld tmpH, X+
-    ld tmpL, X
-
-    ; TODO use defonition and macro function to set up the counter level
-    cpi tmpL, 0x10
-    brne _LED_BLINK
-    cpi tmpH, 0x01
-    brne _LED_BLINK
-
-    clr R1
-    st X, R1
-    st -X, R1
-    sbr _EREG_, (1<<_SIF_)
-
-  _LED_BLINK:
-    sbrs _EREG_, _LBF_
-    rjmp _INC_SEC
     rcall LED_BLINK
-    cbr _EREG_, (1<<_LBF_)
 
-  _INC_SEC:
-    sbrs _EREG_, _SIF_
-    rjmp _SLEEP
-    INC_CNT SecCnt
-    cbr _EREG_, (1<<_SIF_)
-    sbr _EREG_, (1<<_LBF_)  ; Command to run LED Blink
-
-  _SLEEP:
-    sbr _EREG_, (1<<_SMF_)  ; Set Sleep Mode flag
+    ; Set Sleep Mode flag
+    sbr _EREG_, (1<<_SMF_)  
   
   rjmp MAIN
   rjmp THE_END
@@ -107,7 +80,7 @@ MAIN:
 .include "./inc/utils.inc"
 
 
-;/************************* Emergency Exit and REboot ****************************/
+;/************************* Emergency Exit and Reboot ****************************/
 THE_END:
   cli
   rjmp 0
