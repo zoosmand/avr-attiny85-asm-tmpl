@@ -1,6 +1,6 @@
-# AVR Assemble Programming Project
+# AVR Assembler Programming Project
 
-## ATTiny85, Initial Template
+## ATTiny85 Initial Template
 
 ### Tips & Tricks
 

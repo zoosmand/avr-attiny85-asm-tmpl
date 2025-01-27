@@ -1,14 +1,14 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; utils.inc
-; This file contains the utilities code.
+; This file contains vary utilities code.
 ;
 ; Created: 25.01.2025 4:40pm
 ; Author : Dmitry Slobodchikov
 ;
 
 
-;/*********************************** LED Blink *********************************/
+; --- Toggles LED
 LED_BLINK:
   sbrs _EREG_, _LBF_
   ret
@@ -26,24 +26,25 @@ LED_BLINK:
     ret
 
 
-;/************************** Turn the MCU into SLEEP Mode ***********************/
+; --- Activates MCU SLEEP Mode
 SLEEP_MODE:
-  ; sei     ; Enable interrapts to wake up the MCU
-  ; sleep
+  sbrs _EREG_, _SMF_
+  ret
+  sei     ; Enable interrapts to wake up the MCU
+  sleep
   ret
 
 
+; --- Increments system quant
 INC_QNT_CNT:
   sbrs _EREG_, _QIF_
-  rjmp _RETURN_000
+  ret
   INC_CNT QntCnt
   cbr _EREG_, (1<<_QIF_)
-
-  _RETURN_000:
-    ret
+  ret
 
 
-
+; --- Increamnts seconds counter
 INC_SEC_CNT:
   ldi XH, high(QntCnt)
   ldi XL, low(QntCnt)
@@ -52,25 +53,24 @@ INC_SEC_CNT:
   ld tmpL, X
 
   cpi tmpL, low(SEC_THRESHOLD)
-  brne _RETURN_001
+  brne _RET_INC_SEC_CNT
   cpi tmpH, high(SEC_THRESHOLD)
-  brne _RETURN_001
+  brne _RET_INC_SEC_CNT
 
   clr R1
   st X, R1
   st -X, R1
   sbr _EREG_, (1<<_SIF_)
 
-  _RETURN_001:
+  _RET_INC_SEC_CNT:
     ret
 
 
-INC_SEC:
+; --- Scheduled activity (e.g. secondly)
+SCH_SEC:
   sbrs _EREG_, _SIF_
-  rjmp _RETURN_002
+  ret
   INC_CNT SecCnt
   cbr _EREG_, (1<<_SIF_)
-  sbr _EREG_, (1<<_LBF_)  ; Command to run LED Blink
-
-  _RETURN_002:
-    ret
+  sbr _EREG_, (1<<_LBF_)  ; Raise flag to toggle LED
+  ret

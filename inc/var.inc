@@ -1,5 +1,5 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; var.inc
 ; This file contains the code dedicated to definition of variables.
 ;
@@ -9,7 +9,7 @@
 
 
 
-;/******************************** VARIABLES & DATA ******************************/
+; --- Variables & data
 ; Static data stored with the code
 .cseg
 ;  WH1602A_symb: .db "Hallo!!!"

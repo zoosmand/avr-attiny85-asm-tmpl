@@ -1,5 +1,5 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; main.asm
 ; This file contains the base logic code.
 ;
@@ -14,8 +14,9 @@
 
 .include "tn85def.inc"
 
-.equ F_CPU = 16000000
+.equ F_CPU = 16384000 ; CPU frequency defined as 16 MHz
 
+; --- Frequently used register definitions 
 .def dClock   = R12
 .def dRate    = R13
 .def cntHL    = R14
@@ -37,17 +38,19 @@
 .equ LED0PIN  = PB1
 
 
-;/*************************** Definitions and Constanrs **************************/
+; --- Constant definitions
 #define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
 
 
-;/******************************* Event REGistry Flags ***************************/
+; --- Event REGistry Flag Definitions
 .equ _QIF_    = 0       ; System Quant Interval Flag
 .equ _SIF_    = 1       ; Second Interval Flag
 .equ _SMF_    = 2       ; Sleep Mode Flag
 .equ _LBF_    = 3       ; LED Blink Flag
 
+
+; --- Set start address
 .cseg
 .org 0
 
@@ -57,22 +60,18 @@
 
 
 
-;/*********************************** MAIN LOOP **********************************/
+; --- Main workflow
 MAIN:
-  sbrs _EREG_, _SMF_
-  rjmp _AWAKE
   rcall SLEEP_MODE
 
-  _AWAKE:
+  rcall INC_QNT_CNT
+  rcall INC_SEC_CNT
 
-    rcall INC_QNT_CNT
-    rcall INC_SEC_CNT
-    rcall INC_SEC
+  rcall SCH_SEC
+  rcall LED_BLINK
 
-    rcall LED_BLINK
-
-    ; Set Sleep Mode flag
-    sbr _EREG_, (1<<_SMF_)  
+  ; Set Sleep Mode flag
+  sbr _EREG_, (1<<_SMF_)  
   
   rjmp MAIN
   rjmp THE_END
@@ -81,7 +80,7 @@ MAIN:
 .include "./inc/utils.inc"
 
 
-;/************************* Emergency Exit and Reboot ****************************/
+; --- Emergency Exit and Reboot
 THE_END:
   cli
   rjmp 0

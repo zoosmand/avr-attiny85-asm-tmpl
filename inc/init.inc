@@ -1,5 +1,5 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; init.inc
 ; This file contains initialization code.
 ;

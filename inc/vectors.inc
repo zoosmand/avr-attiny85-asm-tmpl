@@ -1,5 +1,5 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; vectors.inc
 ; This file contains the code dedicated to the interrupt vectors logic.
 ;
@@ -25,7 +25,7 @@ rjmp _USI_START       ; USI Start
 rjmp _USI_OVF         ; USI Overflow
 
 
-;/*************************** INTERRUPT VECTORS *****************************/
+; --- Interrupt Vectors
 _INT0:
 _PCINT0:
 _TIMER1_COMPA:

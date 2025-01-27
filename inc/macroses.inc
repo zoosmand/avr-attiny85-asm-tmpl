@@ -1,13 +1,13 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; macroses.inc
-; This file contains vary macoses.
+; This file contains vary macroses.
 ;
 ; Created: 25.01.2025 4:40pm
 ; Author : Dmitry Slobodchikov
 ;
 
-; Initiates / erases SRAM data by given address and the number of bytes to zero.
+; --- Initiates/erases SRAM data by given address and the number of bytes to zero.
 .MACRO INIT_DATA
   clr R1
   ldi YH, high(@0)
@@ -22,7 +22,7 @@
 .ENDMACRO
 
 
-; Increments counters by given address.
+; --- Increments counters by given address.
 .MACRO INC_CNT
   ldi YH, high(@0)
   ldi YL, low(@0)

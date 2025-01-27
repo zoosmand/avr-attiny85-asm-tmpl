@@ -1,5 +1,5 @@
 ;
-; ATtiny85 Assembller Template
+; ATTiny85 Assembller Template
 ; interrupts.inc
 ; This file contains the code dedicated to interrupts' logic.
 ;
