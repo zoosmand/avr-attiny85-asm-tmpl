@@ -68,7 +68,7 @@ MAIN:
   rcall INC_SEC_CNT
 
   rcall SCH_SEC
-  rcall LED_BLINK
+  rcall LED_TOGGLE
 
   ; Set Sleep Mode flag
   sbr _EREG_, (1<<_SMF_)  

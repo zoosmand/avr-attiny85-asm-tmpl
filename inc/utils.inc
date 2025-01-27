@@ -9,19 +9,19 @@
 
 
 ; --- Toggles LED
-LED_BLINK:
+LED_TOGGLE:
   sbrs _EREG_, _LBF_
   ret
 
   sbis LEDPIN, LED0PIN
   rjmp _LED0PIN_H
   cbi LEDPORT, LED0PIN
-  rjmp _RETURN
+  rjmp _RET_LED_TOGGLE
 
   _LED0PIN_H:
     sbi LEDPORT, LED0PIN
   
-  _RETURN:
+  _RET_LED_TOGGLE:
     cbr _EREG_, (1<<_LBF_)
     ret
 
