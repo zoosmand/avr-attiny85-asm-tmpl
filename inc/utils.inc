@@ -30,7 +30,7 @@ LED_TOGGLE:
 SLEEP_MODE:
   sbrs _EREG_, _SMF_
   ret
-  sei     ; Enable interrapts to wake up the MCU
+  sei     ; Enable interrupts to wake up the MCU
   sleep
   ret
 
@@ -44,7 +44,7 @@ INC_QNT_CNT:
   ret
 
 
-; --- Increamnts seconds counter
+; --- Increments seconds counter
 INC_SEC_CNT:
   ldi XH, high(QntCnt)
   ldi XL, low(QntCnt)
