@@ -32,7 +32,7 @@ INIT_TIMER:
   in tmp, TIMSK ; 11.9.7 p.81
   sbr tmp, (1<<TOIE0)
   out TIMSK, tmp
-  clr tmp ; 256
+  ldi tmp, QNT_THRESHOLD
   out TCNT0, tmp ; 11.9.4 p.80
   sei
 

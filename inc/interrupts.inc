@@ -40,8 +40,8 @@ _TIMER0_OVF:
   push R0
   push tmp
 
-  clr R1
-  out TCNT0, R1
+  ldi tmp, QNT_THRESHOLD
+  out TCNT0, tmp
 
   sbr _EREG_, (1<<_QIF_)
   cbr _EREG_, (1<<_SMF_)

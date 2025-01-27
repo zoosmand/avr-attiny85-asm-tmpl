@@ -38,6 +38,7 @@
 
 
 ;/*************************** Definitions and Constanrs **************************/
+#define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
 
 
