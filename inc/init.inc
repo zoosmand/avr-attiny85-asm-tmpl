@@ -37,7 +37,7 @@ INIT_TIMER:
   sei
 
 ; Init/erase SRAM data
-INIT_DATA SRAM_START, 8
+INIT_DATA SRAM_START, SRAM_SIZE
 
 cli
 

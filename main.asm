@@ -32,19 +32,15 @@ MAIN:
   rcall SLEEP_MODE
 
   rcall INC_QNT_CNT
-  rcall INC_SEC_CNT
 
-  rcall SCH_SEC
-  rcall LED_TOGGLE
-
-  ; Set Sleep Mode flag
-  sbr _EREG_, (1<<_SMF_)  
+  rcall MAN_LED
   
   rjmp MAIN
   rjmp THE_END
 
 .include "./inc/interrupts.inc"
 .include "./inc/utils.inc"
+.include "./inc/delay.inc"
 
 
 ; --- Emergency Exit and Reboot

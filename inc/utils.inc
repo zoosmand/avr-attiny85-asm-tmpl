@@ -8,22 +8,43 @@
 ;
 
 
-; --- Toggles LED
-LED_TOGGLE:
-  sbrs _EREG_, _LBF_
-  ret
+; ; --- Toggles LED
+; LED_TOGGLE:
+;   sbrs _EREG_, _LBF_
+;   ret
 
+;   sbis LEDPIN, LED0PIN
+;   rjmp _LED0PIN_H
+;   cbi LEDPORT, LED0PIN
+;   rjmp _RET_LED_TOGGLE
+
+;   _LED0PIN_H:
+;     sbi LEDPORT, LED0PIN
+  
+;   _RET_LED_TOGGLE:
+;     cbr _EREG_, (1<<_LBF_)
+;     ret
+
+
+
+
+; --- Toggles LED
+TOGGLE_LED:
   sbis LEDPIN, LED0PIN
   rjmp _LED0PIN_H
   cbi LEDPORT, LED0PIN
-  rjmp _RET_LED_TOGGLE
-
+  ret
   _LED0PIN_H:
     sbi LEDPORT, LED0PIN
-  
-  _RET_LED_TOGGLE:
-    cbr _EREG_, (1<<_LBF_)
     ret
+
+
+MAN_LED:
+  rcall TOGGLE_LED
+  DELAY 3
+  rcall TOGGLE_LED
+  DELAY 5
+  ret
 
 
 ; --- Activates MCU SLEEP Mode
@@ -32,25 +53,36 @@ SLEEP_MODE:
   ret
   sei     ; Enable interrupts to wake up the MCU
   sleep
+  ; Set Sleep Mode flas right after the MCU woke up
+  ; The MCU to sleep on the next iteration
+  sbr _EREG_, (1<<_SMF_)
   ret
 
 
 ; --- Increments system quant
 INC_QNT_CNT:
+  cli
   sbrs _EREG_, _QIF_
-  ret
+  rjmp _RET_INC_QNT_CNT
   INC_CNT QntCnt
+  rcall INC_SEC_CNT
   cbr _EREG_, (1<<_QIF_)
-  ret
+
+  _RET_INC_QNT_CNT:
+    sei
+    ret
 
 
 ; --- Increments seconds counter
 INC_SEC_CNT:
-  cli
+  ; cli
+  ; sbrs _EREG_, _QIF_
+  ; rjmp _RET_INC_SEC_CNT
+
   ldi XL, low(QntCnt)
   ldi XH, high(QntCnt)
-  ldi YL, low(NextSec)
-  ldi YH, high(NextSec)
+  ldi YL, low(NextQnt)
+  ldi YH, high(NextQnt)
 
   ; Load and compare the Low bytes
   ; exit if not equal
@@ -70,7 +102,7 @@ INC_SEC_CNT:
   ldi tmpL, low(SEC_THRESHOLD)
   ldi tmpH, high(SEC_THRESHOLD)
 
-  ; Increase the next second qunts counter value
+  ; Increase the next second quants counter value
   adc _cntL, tmpL
   in tmp, SREG
   sbrc tmp, SREG_C
@@ -80,18 +112,29 @@ INC_SEC_CNT:
   ; Store the new value 
   st Y, _cntL
   st -Y, _cntH
-  sbr _EREG_, (1<<_SIF_)
+  ; sbr _EREG_, (1<<_SIF_)
+  ; Increment seconds counter
+  INC_CNT SecCnt
 
   _RET_INC_SEC_CNT:
-    sei
+    ; sei
     ret
 
 
 ; --- Scheduled activity (e.g. secondly)
-SCH_SEC:
-  sbrs _EREG_, _SIF_
-  ret
-  INC_CNT SecCnt
-  cbr _EREG_, (1<<_SIF_)
-  sbr _EREG_, (1<<_LBF_)  ; Raise flag to toggle LED
-  ret
+; Secondly
+; SCH_SEC:
+;   sbrs _EREG_, _SIF_
+;   ret
+;   INC_CNT SecCnt
+;   cbr _EREG_, (1<<_SIF_)
+;   ; sbr _EREG_, (1<<_LBF_)  ; Raise flag to toggle LED
+;   ret
+
+
+; Every 10 secobds
+; SCH_10S:
+;   sbrs _EREG_, _10F_
+;   ret
+;   cbr _EREG_, (1<<_10F_)
+;   ret

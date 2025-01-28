@@ -41,7 +41,7 @@
 #define _tmp2 R3        ; reserved for 16-bit, 32-bit, and 64-bit operations 
 #define _tmp tmpLL      ; reserved for 16-bit and 64-bit operations 
 #define __tmp tmpLL     ; reserved for 32-bit operations
-#define _cnt cntLL      ; reserved for 16-bit operations
+#define _cnt cntLL      ; reserved for 16-bit and 64-bit operations
 #define __cnt cntLL     ; reserved for 32-bit operations
 
 #define S cntHL         ; Pair of registers R19-R20
@@ -65,6 +65,9 @@
 
 ; --- Event REGistry Flag Definitions
 .equ _QIF_    = 0       ; System Quant Interval Flag
-.equ _SIF_    = 1       ; Second Interval Flag
-.equ _SMF_    = 2       ; Sleep Mode Flag
-.equ _LBF_    = 3       ; LED Blink Flag
+; .equ _SIF_    = 1       ; 1 Second Interval Flag
+; .equ _10F_    = 2       ; 10 Seconds Interval Flag
+; .equ _MIF_    = 3       ; 1 Minute Interval Flag
+.equ _SMF_    = 4       ; Sleep Mode Flag
+.equ _TLF_    = 5       ; Toggle LED Flag
+.equ _DLF_    = 6       ; Delay Flag

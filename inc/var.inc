@@ -18,9 +18,14 @@
 ; SRAM data segment
 .dseg
 .org 0x0060
-QntCnt:     .dw 0x0000
-NextSec:    .dw 0x0000
-SecCnt:     .dw 0x0000
+QntCnt:         .dw 0x0000
+NextQnt:        .dw 0x0000
+SecCnt:         .dw 0x0000
+; NextSec:        .dw 0x0000
+; LedDelayMs:     .dw 0x0a00
+; LedDelayMsTmp:  .dw 0x0000
+; LedDelaySec:    .dw 0x000a
+DelayEnd: .dw 0x0000
 
 
 ; EEPROM data
