@@ -1,7 +1,7 @@
 ;
 ; ATTiny85 Assembller Template
 ; macroses.inc
-; This file contains vary macroses.
+; This file contains various macroses.
 ;
 ; Created: 25.01.2025 4:40pm
 ; Author : Dmitry Slobodchikov
@@ -24,6 +24,7 @@
 
 ; --- Increments counters by given address.
 .MACRO INC_CNT
+  cli
   ldi YH, high(@0)
   ldi YL, low(@0)
   ld tmpH, Y+
@@ -34,5 +35,6 @@
   inc tmpH
   st Y, tmpL
   st -Y, tmpH
-
+  sei
+  
 .ENDMACRO
