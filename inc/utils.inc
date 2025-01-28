@@ -1,7 +1,7 @@
 ;
 ; ATTiny85 Assembller Template
 ; utils.inc
-; This file contains vary utilities code.
+; This file contains various utilities code.
 ;
 ; Created: 25.01.2025 4:40pm
 ; Author : Dmitry Slobodchikov
@@ -46,23 +46,44 @@ INC_QNT_CNT:
 
 ; --- Increments seconds counter
 INC_SEC_CNT:
-  ldi XH, high(QntCnt)
+  cli
   ldi XL, low(QntCnt)
+  ldi XH, high(QntCnt)
+  ldi YL, low(NextSec)
+  ldi YH, high(NextSec)
 
-  ld tmpH, X+
-  ld tmpL, X
-
-  cpi tmpL, low(SEC_THRESHOLD)
+  ; Load and compare the Low bytes
+  ; exit if not equal
+  ld cntH, X+
+  ld cntL, X
+  cp cntL, _cntL
   brne _RET_INC_SEC_CNT
-  cpi tmpH, high(SEC_THRESHOLD)
+
+  ; Load and compare the High bytes
+  ; exit if not equal
+  ld _cntH, Y+
+  ld _cntL, Y
+  cp cntH, _cntH
   brne _RET_INC_SEC_CNT
 
-  clr R1
-  st X, R1
-  st -X, R1
+  ; Load limit
+  ldi tmpL, low(SEC_THRESHOLD)
+  ldi tmpH, high(SEC_THRESHOLD)
+
+  ; Increase the next second qunts counter value
+  adc _cntL, tmpL
+  in tmp, SREG
+  sbrc tmp, SREG_C
+  inc _cntH
+  add _cntH, tmpH
+
+  ; Store the new value 
+  st Y, _cntL
+  st -Y, _cntH
   sbr _EREG_, (1<<_SIF_)
 
   _RET_INC_SEC_CNT:
+    sei
     ret
 
 
