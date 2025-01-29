@@ -36,3 +36,24 @@
   st -Y, tmpH
   
 .ENDMACRO
+
+
+; --- Toggles LED
+.MACRO LED_TOGGLE
+  sbrs _EREG_, @1
+  rjmp _EXIT_@0_@1_INACTIVE
+
+  sbis LEDPIN, @0
+  rjmp _EXIT_@1_H
+  cbi LEDPORT, @0
+  rjmp _EXIT_@0_@1
+
+  _EXIT_@1_H:
+    sbi LEDPORT, @0
+  
+  _EXIT_@0_@1:
+    cbr _EREG_, (1<<@1)
+
+  _EXIT_@0_@1_INACTIVE:
+
+.ENDMACRO

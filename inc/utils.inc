@@ -8,43 +8,24 @@
 ;
 
 
-; ; --- Toggles LED
-; LED_TOGGLE:
-;   sbrs _EREG_, _LBF_
-;   ret
 
-;   sbis LEDPIN, LED0PIN
+; ; --- Toggles LED
+; TOGGLE_LED:
+;   sbis LEDPIN, @0
 ;   rjmp _LED0PIN_H
 ;   cbi LEDPORT, LED0PIN
-;   rjmp _RET_LED_TOGGLE
-
+;   ret
 ;   _LED0PIN_H:
 ;     sbi LEDPORT, LED0PIN
-  
-;   _RET_LED_TOGGLE:
-;     cbr _EREG_, (1<<_LBF_)
 ;     ret
 
 
-
-
-; --- Toggles LED
-TOGGLE_LED:
-  sbis LEDPIN, LED0PIN
-  rjmp _LED0PIN_H
-  cbi LEDPORT, LED0PIN
-  ret
-  _LED0PIN_H:
-    sbi LEDPORT, LED0PIN
-    ret
-
-
-MAN_LED:
-  rcall TOGGLE_LED
-  DELAY 3
-  rcall TOGGLE_LED
-  DELAY 5
-  ret
+; MAN_LED:
+;   rcall TOGGLE_LED
+;   DELAY 3
+;   rcall TOGGLE_LED
+;   DELAY 5
+;   ret
 
 
 ; --- Activates MCU SLEEP Mode
@@ -64,8 +45,8 @@ INC_QNT_CNT:
   cli
   sbrs _EREG_, _QIF_
   rjmp _RET_INC_QNT_CNT
-  INC_CNT QntCnt
   rcall INC_SEC_CNT
+  INC_CNT QntCnt
   cbr _EREG_, (1<<_QIF_)
 
   _RET_INC_QNT_CNT:
@@ -128,7 +109,7 @@ INC_SEC_CNT:
 ;   ret
 ;   INC_CNT SecCnt
 ;   cbr _EREG_, (1<<_SIF_)
-;   ; sbr _EREG_, (1<<_LBF_)  ; Raise flag to toggle LED
+;   ; sbr _EREG_, (1<<_TLF_)  ; Raise flag to toggle LED
 ;   ret
 
 

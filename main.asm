@@ -33,14 +33,15 @@ MAIN:
 
   rcall INC_QNT_CNT
 
-  rcall MAN_LED
-  
+  LED_TOGGLE LEDBLUE, _TBF_
+
   rjmp MAIN
   rjmp THE_END
 
 .include "./inc/interrupts.inc"
 .include "./inc/utils.inc"
 .include "./inc/delay.inc"
+.include "./inc/scheduler.inc"
 
 
 ; --- Emergency Exit and Reboot

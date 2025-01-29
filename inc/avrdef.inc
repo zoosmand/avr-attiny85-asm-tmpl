@@ -28,7 +28,7 @@
 .equ LEDDDR   = DDRB
 .equ LEDPORT  = PORTB
 .equ LEDPIN   = PINB
-.equ LED0PIN  = PB1
+.equ LEDBLUE  = PB1
 
 
 ; --- Register name definitions
@@ -62,6 +62,8 @@
 #define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
 
+#define _LEDBLUE_PD_    ; Define Blue Led in Pull-Down Mode
+
 
 ; --- Event REGistry Flag Definitions
 .equ _QIF_    = 0       ; System Quant Interval Flag
@@ -69,5 +71,5 @@
 ; .equ _10F_    = 2       ; 10 Seconds Interval Flag
 ; .equ _MIF_    = 3       ; 1 Minute Interval Flag
 .equ _SMF_    = 4       ; Sleep Mode Flag
-.equ _TLF_    = 5       ; Toggle LED Flag
+.equ _TBF_    = 5       ; Toggle Blue LED Flag
 .equ _DLF_    = 6       ; Delay Flag
