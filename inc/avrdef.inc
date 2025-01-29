@@ -69,11 +69,7 @@
 
 ; --- Event REGistry Flag Definitions
 .equ _QIF_    = 0       ; System Quant Interval Flag
-; .equ _SIF_    = 1       ; 1 Second Interval Flag
-; .equ _10F_    = 2       ; 10 Seconds Interval Flag
-; .equ _MIF_    = 3       ; 1 Minute Interval Flag
-.equ _SMF_    = 4       ; Sleep Mode Flag
-.equ _DLF_    = 6       ; Delay Flag
+.equ _SMF_    = 1       ; Sleep Mode Flag
 
 .equ _BLNF_    = 0       ; Blue LED On Flag
 .equ _BLFF_    = 1       ; Blue LED Off Flag

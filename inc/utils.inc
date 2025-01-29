@@ -74,6 +74,5 @@ INC_SEC_CNT:
   INC_CNT SecCnt
 
   _RET_INC_SEC_CNT:
-    ; sei
     ret
 
