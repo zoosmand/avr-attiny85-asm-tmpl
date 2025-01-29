@@ -9,12 +9,16 @@
 
 
 ; --- Runs scheduled tasks
-SCHEDULER:
-  ldi ZL, low(SecCnt)
-  ldi ZH, high(SecCnt)
+; 0 - counter
+; 1 - interval
+; 2 - register
+; 3 - flag
+.MACRO SCHEDULER
+  ldi ZL, low(@0)
+  ldi ZH, high(@0)
 
-  ldi YL, low(SchCnt+2)
-  ldi YH, high(SchCnt+2)
+  ldi YL, low(@1+2)
+  ldi YH, high(@1+2)
 
   ld cntH, Z+
   ld cntL, Z
@@ -24,13 +28,13 @@ SCHEDULER:
 
   ; Start compate registers
   cp cntL, _cntL
-  brne _RET_SCHEDULER
+  brne _END_SCHEDULER
   cp cntH, _cntH
-  brne _RET_SCHEDULER
+  brne _END_SCHEDULER
 
   ; Load schedule interval value
-  ldi XL, low(SchCnt)
-  ldi XH, high(SchCnt)
+  ldi XL, low(@1)
+  ldi XH, high(@1)
 
   ld tmpH, X+
   ld tmpL, X
@@ -45,7 +49,13 @@ SCHEDULER:
   st Y, cntL
   st -Y, cntH
 
-  sbr _EREG_, (1<<_TBF_)
+  ; Raise flag in given registry
+  ldi YH, high(@2)
+  ldi YL, low(@2)
+  ld tmp, Y
+  sbr tmp, (1<<@3)
+  st Y, tmp
 
-  _RET_SCHEDULER:
-    ret
+  _END_SCHEDULER:
+
+.ENDMACRO

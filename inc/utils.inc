@@ -8,26 +8,6 @@
 ;
 
 
-
-; ; --- Toggles LED
-; TOGGLE_LED:
-;   sbis LEDPIN, @0
-;   rjmp _LED0PIN_H
-;   cbi LEDPORT, LED0PIN
-;   ret
-;   _LED0PIN_H:
-;     sbi LEDPORT, LED0PIN
-;     ret
-
-
-; MAN_LED:
-;   rcall TOGGLE_LED
-;   DELAY 3
-;   rcall TOGGLE_LED
-;   DELAY 5
-;   ret
-
-
 ; --- Activates MCU SLEEP Mode
 SLEEP_MODE:
   sbrs _EREG_, _SMF_
@@ -56,26 +36,23 @@ INC_QNT_CNT:
 
 ; --- Increments seconds counter
 INC_SEC_CNT:
-  ; cli
-  ; sbrs _EREG_, _QIF_
-  ; rjmp _RET_INC_SEC_CNT
-
   ldi XL, low(QntCnt)
   ldi XH, high(QntCnt)
-  ldi YL, low(NextQnt)
-  ldi YH, high(NextQnt)
+  ldi YL, low(QntCnt+2)
+  ldi YH, high(QntCnt+2)
 
   ; Load and compare the Low bytes
   ; exit if not equal
   ld cntH, X+
   ld cntL, X
+  ld _cntH, Y+
+  ld _cntL, Y
+
   cp cntL, _cntL
   brne _RET_INC_SEC_CNT
 
-  ; Load and compare the High bytes
+  ; Compare the High bytes
   ; exit if not equal
-  ld _cntH, Y+
-  ld _cntL, Y
   cp cntH, _cntH
   brne _RET_INC_SEC_CNT
 
@@ -93,7 +70,6 @@ INC_SEC_CNT:
   ; Store the new value 
   st Y, _cntL
   st -Y, _cntH
-  ; sbr _EREG_, (1<<_SIF_)
   ; Increment seconds counter
   INC_CNT SecCnt
 
@@ -101,21 +77,3 @@ INC_SEC_CNT:
     ; sei
     ret
 
-
-; --- Scheduled activity (e.g. secondly)
-; Secondly
-; SCH_SEC:
-;   sbrs _EREG_, _SIF_
-;   ret
-;   INC_CNT SecCnt
-;   cbr _EREG_, (1<<_SIF_)
-;   ; sbr _EREG_, (1<<_TLF_)  ; Raise flag to toggle LED
-;   ret
-
-
-; Every 10 secobds
-; SCH_10S:
-;   sbrs _EREG_, _10F_
-;   ret
-;   cbr _EREG_, (1<<_10F_)
-;   ret

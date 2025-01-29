@@ -23,6 +23,8 @@
 
 .include "./inc/vectors.inc"
 .include "./inc/macroses.inc"
+.include "./inc/scheduler.inc"
+.include "./inc/delay.inc"
 .include "./inc/init.inc"
 
 
@@ -31,19 +33,17 @@
 MAIN:
   rcall SLEEP_MODE
 
-  rcall SCHEDULER
+  SCHEDULER QntCnt, SchCnt, LedReg, _BLNF_
 
   rcall INC_QNT_CNT
 
-  LED_TOGGLE LEDBLUE, _TBF_
+  LED_TOGGLE LedReg, _BLNF_, LEDBLUE
 
   rjmp MAIN
   rjmp THE_END
 
 .include "./inc/interrupts.inc"
 .include "./inc/utils.inc"
-.include "./inc/delay.inc"
-.include "./inc/scheduler.inc"
 
 
 ; --- Emergency Exit and Reboot

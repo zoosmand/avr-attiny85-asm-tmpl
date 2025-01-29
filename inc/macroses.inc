@@ -54,19 +54,25 @@
 
 ; --- Toggles LED by given led and the correspondent flag
 .MACRO LED_TOGGLE
-  sbrs _EREG_, @1
+  ldi YH, high(@0)
+  ldi YL, low(@0)
+
+  ld tmp, Y
+
+  sbrs tmp, @1
   rjmp _EXIT_@0_@1_INACTIVE
 
-  sbis LEDPIN, @0
+  sbis LEDPIN, @2
   rjmp _EXIT_@1_H
-  cbi LEDPORT, @0
+  cbi LEDPORT, @2
   rjmp _EXIT_@0_@1
 
   _EXIT_@1_H:
-    sbi LEDPORT, @0
+    sbi LEDPORT, @2
   
   _EXIT_@0_@1:
-    cbr _EREG_, (1<<@1)
+    cbr tmp, (1<<@1)
+    st Y, tmp
 
   _EXIT_@0_@1_INACTIVE:
 
