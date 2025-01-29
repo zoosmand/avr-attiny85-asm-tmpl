@@ -31,6 +31,8 @@
 MAIN:
   rcall SLEEP_MODE
 
+  rcall SCHEDULER
+
   rcall INC_QNT_CNT
 
   LED_TOGGLE LEDBLUE, _TBF_

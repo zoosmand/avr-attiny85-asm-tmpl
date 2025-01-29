@@ -19,10 +19,13 @@ _RESET:
   out SPL, tmp
 
 ; --- Init/erase SRAM data
+INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
 ; Clear the first half of RAM
-INIT_DATA SRAM_START, (SRAM_SIZE/2)-1
+; INIT_DATA SRAM_START, (SRAM_SIZE/2)-1
 ; Then, the second one
-INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
+; INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
+
+INIT_VAR SchCnt, INIT_SCHED_TMOUT
 
 ; --- Init Flag Register
 INIT_FLAGS:
