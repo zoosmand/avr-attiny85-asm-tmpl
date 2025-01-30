@@ -25,8 +25,6 @@ INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
 ; Then, the second one
 ; INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
 
-INIT_VAR SchCnt, INIT_SCHED_TMOUT
-
 ; --- Init Flag Register
 INIT_FLAGS:
   clr _EREG_

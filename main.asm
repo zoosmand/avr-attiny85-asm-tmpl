@@ -33,11 +33,15 @@
 MAIN:
   rcall SLEEP_MODE
 
-  SCHEDULER QntCnt, SchCnt, LedReg, _BLNF_
+  SCHEDULER SecCnt, INIT_SCHED_TMOUT, SchCnt, LedReg, _BLAF_, _END_SCHED_01
+  _END_SCHED_01:
+    nop
 
   rcall INC_QNT_CNT
 
-  LED_TOGGLE LedReg, _BLNF_, LEDBLUE
+  ; LED_TOGGLE LedReg, _BLAF_, LEDBLUE
+  ; rcall LED LedReg, _BLAF_
+  rcall LED
 
   rjmp MAIN
   rjmp THE_END
