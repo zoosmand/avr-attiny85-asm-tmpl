@@ -7,8 +7,10 @@
 ; Author : Dmitry Slobodchikov
 ;
 
-;/********************** START AFTER POWER UP OR RESET FROM **********************/
+; --- Entry point on Reset or Brown Level Event
 _RESET:
+  ; --- Set Global Interrupt Block, not to bother initialization steps
+  cli
   clr R1
   out SREG, R1
   ldi tmp, high(RAMEND)
@@ -16,16 +18,20 @@ _RESET:
   ldi tmp, low(RAMEND)
   out SPL, tmp
 
+; --- Init/erase SRAM data
+INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
+; Clear the first half of RAM
+; INIT_DATA SRAM_START, (SRAM_SIZE/2)-1
+; Then, the second one
+; INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
 
-;/******************** INIT EVENT AND MEASURE REGISTRY FLAGS  ********************/
+; --- Init Flag Register
 INIT_FLAGS:
   clr _EREG_
   ; sbr _EREG_, (1<<_MIF_)
 
-;/************************************ Timer *************************************/
-;/*     (1/8000000)*1024*256 = 32.768ms      */
+; --- Init timer TIM0
 INIT_TIMER:
-  cli
   in tmp, TCCR0B ; 11.9.3 p.79
   sbr tmp, (1<<CS02)|(1<<CS00) ; 1024
   out TCCR0B, tmp
@@ -34,14 +40,8 @@ INIT_TIMER:
   out TIMSK, tmp
   ldi tmp, QNT_THRESHOLD
   out TCNT0, tmp ; 11.9.4 p.80
-  sei
 
-; Init/erase SRAM data
-INIT_DATA SRAM_START, 8
-
-cli
-
-;/*********************************** MCU ***************************************/
+; --- Init MCU
 INIT_MCU:
   in tmp, MCUCR ; Enable Sleep Mode
   sbr tmp, (1<<SE) ; Idle mode
@@ -56,8 +56,7 @@ INIT_MCU:
   sbr tmp, (1<<PRADC)|(1<<PRUSI)|(1<<PRTIM1)
   out PRR, tmp
 
-
-;/******************************* WatchDog Timer *********************************/
+; --- Init Watchdog
 INIT_WATCHDOG:
   in tmp, WDTCR ; 8.5.2 p.45
   sbr tmp, (1<<WDCE)|(1<<WDE)
@@ -68,9 +67,11 @@ INIT_WATCHDOG:
 sei
 
 
-;/*********************************** LED ***************************************/
+; --- Init LEDs
 INIT_LED:
-  sbi LEDDDR, LED0PIN
-  ;sbi LEDPORT, LED0PIN
+  sbi LEDDDR, LEDBLUE
+  #if _LEDBLUE_PD_
+  sbi LEDPORT, LEDBLUE
+  #endif
 
 

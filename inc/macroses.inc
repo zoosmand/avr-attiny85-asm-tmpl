@@ -22,9 +22,22 @@
 .ENDMACRO
 
 
+; --- Initializes given variable
+.MACRO INIT_VAR
+  ldi YH, high(@0)
+  ldi YL, low(@0)
+  ld tmpH, Y+
+  ld tmpL, Y
+  ldi tmpH, high(@1)
+  ldi tmpL, low(@1)
+  st Y, tmpL
+  st -Y, tmpH
+
+.ENDMACRO
+
+
 ; --- Increments counters by given address.
 .MACRO INC_CNT
-  cli
   ldi YH, high(@0)
   ldi YL, low(@0)
   ld tmpH, Y+
@@ -35,6 +48,32 @@
   inc tmpH
   st Y, tmpL
   st -Y, tmpH
-  sei
   
+.ENDMACRO
+
+
+; --- Toggles LED by given led and the correspondent flag
+.MACRO LED_TOGGLE
+  ldi YH, high(@0)
+  ldi YL, low(@0)
+
+  ld tmp, Y
+
+  sbrs tmp, @1
+  rjmp _EXIT_@0_@1_INACTIVE
+
+  sbis LEDPIN, @2
+  rjmp _EXIT_@1_H
+  cbi LEDPORT, @2
+  rjmp _EXIT_@0_@1
+
+  _EXIT_@1_H:
+    sbi LEDPORT, @2
+  
+  _EXIT_@0_@1:
+    cbr tmp, (1<<@1)
+    st Y, tmp
+
+  _EXIT_@0_@1_INACTIVE:
+
 .ENDMACRO

@@ -28,7 +28,7 @@
 .equ LEDDDR   = DDRB
 .equ LEDPORT  = PORTB
 .equ LEDPIN   = PINB
-.equ LED0PIN  = PB1
+.equ LEDBLUE  = PB1
 
 
 ; --- Register name definitions
@@ -41,7 +41,7 @@
 #define _tmp2 R3        ; reserved for 16-bit, 32-bit, and 64-bit operations 
 #define _tmp tmpLL      ; reserved for 16-bit and 64-bit operations 
 #define __tmp tmpLL     ; reserved for 32-bit operations
-#define _cnt cntLL      ; reserved for 16-bit operations
+#define _cnt cntLL      ; reserved for 16-bit and 64-bit operations
 #define __cnt cntLL     ; reserved for 32-bit operations
 
 #define S cntHL         ; Pair of registers R19-R20
@@ -61,10 +61,23 @@
 ; --- Constant definitions
 #define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
+#define INIT_RAM_CLR_CNT 32
+#define INIT_SCHED_TMOUT 3
+
+;#define _LEDBLUE_PD_    ; Define Blue Led in Pull-Down Mode
 
 
 ; --- Event REGistry Flag Definitions
 .equ _QIF_    = 0       ; System Quant Interval Flag
-.equ _SIF_    = 1       ; Second Interval Flag
-.equ _SMF_    = 2       ; Sleep Mode Flag
-.equ _LBF_    = 3       ; LED Blink Flag
+.equ _SMF_    = 1       ; Sleep Mode Flag
+
+.equ _BLAF_    = 0       ; Blue LED Active Flag
+.equ _GLAF_    = 1       ; Green LED Active Flag
+.equ _RLAF_    = 2       ; Red LED Active Flag
+.equ _LPBF_    = 7       ; LED Pause Counter is Busy Flag
+.equ _BLUF_    = 0       ; Blue LED On Flag
+.equ _BLDF_    = 1       ; Blue LED Off Flag
+.equ _GLUF_    = 2       ; Green LED On Flag
+.equ _GLDF_    = 3       ; Green LED Off Flag
+.equ _RLUF_    = 4       ; Red LED On Flag
+.equ _RLDF_    = 5       ; Red LED Off Flag

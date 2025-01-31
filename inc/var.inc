@@ -18,9 +18,11 @@
 ; SRAM data segment
 .dseg
 .org 0x0060
-QntCnt:     .dw 0x0000
-NextSec:    .dw 0x0000
-SecCnt:     .dw 0x0000
+QntCnt:         .dw 0x0000, 0x0000
+SecCnt:         .dw 0x0000
+SchCnt:         .dw 0x0000
+LedCnt:         .dw 0x0000
+LedReg:         .dw 0x0000
 
 
 ; EEPROM data
