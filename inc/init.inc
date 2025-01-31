@@ -25,6 +25,28 @@ INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
 ; Then, the second one
 ; INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
 
+
+; Load Counter address
+ldi YH, high(LedCntBlue)
+ldi YL, low(LedCntBlue)
+; Store the counter address
+mov tmpH, YH
+mov tmpL, YL
+std Y+3, tmpH
+std Y+2, tmpL
+; Store LED PORT
+ldi tmpH, high(PORTB)
+ldi tmpL, low(PORTB)
+std Y+5, tmpH
+std Y+4, tmpL
+; Store LED PIN
+ldi tmp, PINB1
+std Y+6, tmp
+; Clear temporary register
+clr tmp
+std Y+7, tmp
+
+
 ; --- Init Flag Register
 INIT_FLAGS:
   clr _EREG_

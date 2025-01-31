@@ -23,8 +23,8 @@
 
 .include "./inc/vectors.inc"
 .include "./inc/macroses.inc"
-.include "./inc/scheduler.inc"
 .include "./inc/delay.inc"
+.include "./inc/scheduler.inc"
 .include "./inc/init.inc"
 
 
@@ -33,15 +33,13 @@
 MAIN:
   rcall SLEEP_MODE
 
-  SCHEDULER SecCnt, INIT_SCHED_TMOUT, SchCnt, LedReg, _BLAF_, _END_SCHED_01
+  SCHEDULER SecCnt, INIT_SCHED_TMOUT, SchCntBlue, LedReg, _BLAF_, _END_SCHED_01
   _END_SCHED_01:
     nop
 
   rcall INC_QNT_CNT
 
-  ; LED_TOGGLE LedReg, _BLAF_, LEDBLUE
-  ; rcall LED LedReg, _BLAF_
-  rcall LED
+  rcall LED_BLUE
 
   rjmp MAIN
   rjmp THE_END

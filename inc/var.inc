@@ -20,9 +20,13 @@
 .org 0x0060
 QntCnt:         .dw 0x0000, 0x0000
 SecCnt:         .dw 0x0000
-SchCnt:         .dw 0x0000
-LedCnt:         .dw 0x0000
-LedReg:         .dw 0x0000
+SchCntBlue:     .dw 0x0000
+SchCntGreen:    .dw 0x0000
+SchCntRed:      .dw 0x0000
+LedReg:         .dw 0x0000, 0x0000
+LedCntBlue:     .dw 0x0000, 0x0000, 0x0000
+LedCntGreen:    .dw 0x0000, 0x0000, 0x0000
+LedCntRed:      .dw 0x0000, 0x0000, 0x0000
 
 
 ; EEPROM data

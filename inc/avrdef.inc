@@ -61,7 +61,7 @@
 ; --- Constant definitions
 #define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
-#define INIT_RAM_CLR_CNT 32
+#define INIT_RAM_CLR_CNT 64
 #define INIT_SCHED_TMOUT 3
 
 ;#define _LEDBLUE_PD_    ; Define Blue Led in Pull-Down Mode
@@ -74,10 +74,10 @@
 .equ _BLAF_    = 0       ; Blue LED Active Flag
 .equ _GLAF_    = 1       ; Green LED Active Flag
 .equ _RLAF_    = 2       ; Red LED Active Flag
-.equ _LPBF_    = 7       ; LED Pause Counter is Busy Flag
-.equ _BLUF_    = 0       ; Blue LED On Flag
-.equ _BLDF_    = 1       ; Blue LED Off Flag
-.equ _GLUF_    = 2       ; Green LED On Flag
-.equ _GLDF_    = 3       ; Green LED Off Flag
-.equ _RLUF_    = 4       ; Red LED On Flag
-.equ _RLDF_    = 5       ; Red LED Off Flag
+.equ _BLBF_    = 5       ; Blue LED Busy Flag
+.equ _GLBF_    = 6       ; Green LED Busy Flag
+.equ _RLBF_    = 7       ; Red LED Busy Flag
+
+.equ _LUF_    = 0       ; LED Up Flag
+.equ _LDF_    = 1       ; LED Down Flag
+.equ _LBF_    = 7       ; LED Busy Flag

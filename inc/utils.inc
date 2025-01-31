@@ -77,34 +77,122 @@ INC_SEC_CNT:
     ret
 
 
+; --
+LED_BLUE:
+  ; ldi YH, high(LedReg)
+  ; ldi YL, low(LedReg)
+  ; ld tmp, Y
+  ; mov R0, tmp
+  ; ldi tmp, (1<<_BLAF_)
+  ; mov R1, tmp
+  ; or R0, R1
+  ; mov tmp, R0
+  ; st Y, tmp
 
 
-; -- LED
-LED:
+  ; ldd tmp, Y+1
+
+  ; mov R0, tmp
+  ; ldi tmp, (1<<_BLUF_)
+  ; mov R1, tmp
+  ; or R0, R1
+  ; mov tmp, R0
+  ; std Y+1, tmp
+
+  ; ; Prepare Counter Address
+  ; ldi YH, high(LedReg+4)
+  ; ldi YL, low(LedReg+4)
+  ; ldi tmpH, high(LedCntBlue)
+  ; ldi tmpL, low(LedCntBlue)
+  ; std Y+0, tmpH 
+  ; std Y+1, tmpL 
+
+  ; rcall LED
+  ; ret
   ldi YH, high(LedReg)
   ldi YL, low(LedReg)
   ld tmp, Y
-  
+
+  sbrc tmp, _BLBF_
+  rjmp _RET_LED_BLUE
+
   sbrs tmp, _BLAF_
-  rjmp _RET_LED
+  rjmp _RET_LED_BLUE
+  
+  
+  ; ***
 
-  cbr tmp, (1<<_BLAF_)
-  st Y, tmp
+  ldi YH, high(LedReg+2)
+  ldi YL, low(LedReg+2)
+  ; Store Counter address
+  ldi tmpH, high(LedCntBlue)
+  ldi tmpL, low(LedCntBlue)
+  std Y+0, tmpH
+  std Y+1, tmpL
 
-  ldi YH, high(LedReg+1)
-  ldi YL, low(LedReg+1)
+  ; ***
+
+  ldi YH, high(LedReg)
+  ldi YL, low(LedReg)
   ld tmp, Y
-
-  sbr tmp, (1<<_BLUF_)
+  ; cbr tmp, (1<<_BLAF_)
+  sbr tmp, (1<<_BLBF_)
   st Y, tmp
 
-  ret
+  ; Store Leb UP flag
+  ldi YH, high(LedCntBlue+5)
+  ldi YL, low(LedCntBlue+5)
+  clr tmp
+  sbr tmp, (1<<_LUF_)
+  st Y, tmp
 
-
-  _RET_LED:
+  _RET_LED_BLUE:
     rcall LED_UP
-    rcall LED_DOWN
     ret
+
+
+
+; ; -- LED
+; LED:
+;   ; Load Flag from a tempopary register
+;   ldi YH, high(LedReg+2)
+;   ldi YL, low(LedReg+2)
+;   ld tmp, Y
+;   mov R0, tmp
+;   ldi YH, high(LedReg)
+;   ldi YL, low(LedReg)
+;   ld tmp, Y
+;   mov R1, tmp
+
+;   ; Branch if Active Flag Down
+;   and R1, R0
+;   cp R1, R0
+;   brne _RET_LED
+
+;   ; Clear Active Flag
+;   neg R1
+;   eor R0, R1
+;   and tmp, R0
+;   st Y, tmp
+
+;   ; Set Up Flag
+;   ; Load Flag from a tempopary register
+;   ldi YH, high(LedReg+3)
+;   ldi YL, low(LedReg+3)
+;   ld tmp, Y
+;   mov R0, tmp
+;   ldi YH, high(LedReg+1)
+;   ldi YL, low(LedReg+1)
+;   ld tmp, Y
+;   or tmp, R0
+;   st Y, tmp
+
+;   ret
+
+;   _RET_LED:
+;     rcall LED_UP
+;     rcall LED_DOWN
+;     ret
 
 
 
@@ -112,73 +200,107 @@ LED:
 ; ---
 LED_UP:
 
-  ldi YH, high(LedReg+1)
-  ldi YL, low(LedReg+1)
-  ld tmp, Y
+  ldi YH, high(LedReg)
+  ldi YL, low(LedReg)
+  ldd tmp, Y+5
+  mov R0, Y
+  mov R1, Y
 
-  sbrs tmp, _BLUF_
-  rjmp _LED_UP_PAUSE_UP
+  and R0, _LUF_
+  cpi R0, _LUF_
+  brne _RET_LED_UP
 
-  sbrc tmp, _LPBF_
-  rjmp _RET_LED_UP
+  and R1, _LBF_
+  cpi R1, _LBF_
+  breq _RET_LED_UP
 
-  sbr tmp, (1<<_LPBF_)
-  st Y, tmp
-  sbi LEDPORT, LEDBLUE
-  PAUSE QntCnt, 50, LedCnt
+  sbr tmp, (1<<_LBF_)
+  std Y+5, tmp
 
+  ldd tmpH, Y+2
+  ldd tmpL, Y+3
+  ldd tmp, Y+4
+
+  sbi Y+2, 
+  PAUSE QntCnt, 50, LedCntBlue
+
+  ; ldi YH, high(LedReg+1)
+  ; ldi YL, low(LedReg+1)
+  ; ld tmp, Y
+  ; mov R1, tmp
+
+  ; push R1
+
+  ; ; sbrs tmp, _BLUF_
+  ; ; rjmp _LED_UP_PAUSE_UP
+
+  ; ; Branch if Active Flag Down
+  ; and R1, R0
+  ; cp R1, R0
+  ; brne _LED_UP_PAUSE_UP
+
+
+
+  ; sbrc tmp, _LPBF_
+  ; rjmp _RET_LED_UP
+
+  ; sbr tmp, (1<<_LPBF_)
+  ; st Y, tmp
+  ; sbi LEDPORT, LEDBLUE
+  ; PAUSE QntCnt, 50, LedCntBlue
+
+  ; _RET_LED_UP:
+  ;   ; 
+  ;   PAUSE_STATE QntCnt, LedCntBlue, LedReg+1, _BLUF_, _LED_UP_PAUSE_UP, _LED_UP_PAUSE_DOWN
+
+  ; _LED_UP_PAUSE_DOWN:
+  ;   ldi YH, high(LedReg+1)
+  ;   ldi YL, low(LedReg+1)
+  ;   ld tmp, Y
+
+  ;   cbr tmp, (1<<_BLUF_)|(1<<_LPBF_)
+  ;   sbr tmp, (1<<_BLDF_)
+  ;   st Y, tmp
+
+  ;   ret
+  
   _RET_LED_UP:
-    ; 
-    PAUSE_STATE QntCnt, LedCnt, LedReg+1, _BLUF_, _LED_UP_PAUSE_UP, _LED_UP_PAUSE_DOWN
-
-  _LED_UP_PAUSE_DOWN:
-    ldi YH, high(LedReg+1)
-    ldi YL, low(LedReg+1)
-    ld tmp, Y
-
-    cbr tmp, (1<<_BLUF_)|(1<<_LPBF_)
-    sbr tmp, (1<<_BLDF_)
-    st Y, tmp
-
     ret
+
+
+
+; ; ---
+; LED_DOWN:
+
+;   ldi YH, high(LedReg+1)
+;   ldi YL, low(LedReg+1)
+;   ld tmp, Y
+
+;   sbrs tmp, _BLDF_
+;   rjmp _RET_LED_DOWN
+
+;   sbrc tmp, _LPBF_
+;   rjmp _RET_LED_DOWN
+
+;   sbr tmp, (1<<_LPBF_)
+;   st Y, tmp
+;   cbi LEDPORT, LEDBLUE
+;   PAUSE SecCnt, 1, LedCntBlue
+
+;   _RET_LED_DOWN:
+;     ; 
+;     PAUSE_STATE SecCnt, LedCntBlue, LedReg+1, _BLDF_, _LED_DOWN_PAUSE_UP, _LED_DOWN_PAUSE_DOWN
+
+;   _LED_DOWN_PAUSE_DOWN:
+;     ldi YH, high(LedReg+1)
+;     ldi YL, low(LedReg+1)
+;     ld tmp, Y
+
+;     cbr tmp, (1<<_BLDF_)|(1<<_LPBF_)
+;     st Y, tmp
+
+;     ret
   
-  _LED_UP_PAUSE_UP:
-    ret
-
-
-
-; ---
-LED_DOWN:
-
-  ldi YH, high(LedReg+1)
-  ldi YL, low(LedReg+1)
-  ld tmp, Y
-
-  sbrs tmp, _BLDF_
-  rjmp _RET_LED_DOWN
-
-  sbrc tmp, _LPBF_
-  rjmp _RET_LED_DOWN
-
-  sbr tmp, (1<<_LPBF_)
-  st Y, tmp
-  cbi LEDPORT, LEDBLUE
-  PAUSE SecCnt, 1, LedCnt
-
-  _RET_LED_DOWN:
-    ; 
-    PAUSE_STATE SecCnt, LedCnt, LedReg+1, _BLDF_, _LED_DOWN_PAUSE_UP, _LED_DOWN_PAUSE_DOWN
-
-  _LED_DOWN_PAUSE_DOWN:
-    ldi YH, high(LedReg+1)
-    ldi YL, low(LedReg+1)
-    ld tmp, Y
-
-    cbr tmp, (1<<_BLDF_)|(1<<_LPBF_)
-    st Y, tmp
-
-    ret
-  
-  _LED_DOWN_PAUSE_UP:
-    ret
+;   _LED_DOWN_PAUSE_UP:
+;     ret
 
