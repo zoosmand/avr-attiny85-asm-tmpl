@@ -25,72 +25,8 @@ INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
 ; Then, the second one
 ; INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
 
-
-; Load Counter address
-ldi YH, high(LedPrmBlue)
-ldi YL, low(LedPrmBlue)
-; Store Pause1
-ldi tmpH, 0x00
-ldi tmpL, 0x32
-std Y+0x08, tmpH
-std Y+0x09, tmpL
-; Store Pause2
-ldi tmpH, 0x00
-ldi tmpL, 0x02
-std Y+0x0a, tmpH
-std Y+0x0b, tmpL
-; Store LED PORT
-ldi tmpH, high(LEDPORT)
-ldi tmpL, low(LEDPORT)
-std Y+0x0c, tmpH
-std Y+0x0d, tmpL
-; Store LED PIN
-ldi tmp, (1<<LEDBLUE)
-std Y+0x0e, tmp
-; Clear temporary register
-clr tmp
-std Y+0x0f, tmp
-; Store Pause1 source address
-ldi tmpH, high(QntCnt)
-ldi tmpL, low(QntCnt)
-std Y+0x10, tmpH
-std Y+0x11, tmpL
-; Store Pause2 source address
-ldi tmpH, high(SecCnt)
-ldi tmpL, low(SecCnt)
-std Y+0x12, tmpH
-std Y+0x13, tmpL
-
-; ; Load Counter address
-; ldi YH, high(LedPrmGreen)
-; ldi YL, low(LedPrmGreen)
-; ; Store LED PORT
-; ldi tmpH, high(LEDPORT)
-; ldi tmpL, low(LEDPORT)
-; std Y+0x08, tmpH
-; std Y+0x09, tmpL
-; ; Store LED PIN
-; ldi tmp, (1<<LEDGREEN)
-; std Y+0x0a, tmp
-; ; Clear temporary register
-; clr tmp
-; std Y+0x0b, tmp
-
-; ; Load Counter address
-; ldi YH, high(LedPrmRed)
-; ldi YL, low(LedPrmRed)
-; ; Store LED PORT
-; ldi tmpH, high(LEDPORT)
-; ldi tmpL, low(LEDPORT)
-; std Y+0x08, tmpH
-; std Y+0x09, tmpL
-; ; Store LED PIN
-; ldi tmp, (1<<LEDRED)
-; std Y+0x0a, tmp
-; ; Clear temporary register
-; clr tmp
-; std Y+0x0b, tmp
-
+; --- Init LED parameters
+INIT_LED_PARAM LedPrmBlue, 0x0016, 0x0002, LEDPORT, LEDGREEN, QntCnt, SecCnt
 
 ; --- Init Flag Register
 INIT_FLAGS:
@@ -139,6 +75,16 @@ INIT_LED:
   sbi LEDDDR, LEDBLUE
   #if _LEDBLUE_PD_
   sbi LEDPORT, LEDBLUE
+  #endif
+
+  sbi LEDDDR, LEDGREEN
+  #if _LEDGREEN_PD_
+  sbi LEDPORT, LEDGREEN
+  #endif
+  
+  sbi LEDDDR, LEDRED
+  #if _LEDRED_PD_
+  sbi LEDPORT, LEDRED
   #endif
 
 

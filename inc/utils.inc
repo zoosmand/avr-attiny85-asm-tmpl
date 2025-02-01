@@ -157,15 +157,13 @@ LED_UP:
   or tmp, R1 
 
   out PORTB, tmp
-  ; PAUSE QntCnt, 50, LedCntBlue
+  DELAY Y+0x10, Y+0x08, Y+0x02
 
   ; LED is UP now, so exit
   rjmp _RET_LED_UP
 
   _LED_UP_BUSY:
-    ; TODO Get pause state
-    ; ldd tmp, Y+5
-    ; std Y+5, tmp
+    DELAY_STATE Y+0x10, Y+0x02, _RET_LED_UP, _LED_UP_READY
 
   _LED_UP_READY:
     ; Read LED paramener address
@@ -216,6 +214,7 @@ LED_DOWN:
   ; ; Read PORT board address
   ; ldd ZH, Y+2
   ; ldd ZL, Y+3
+
   ; Read PIN bit
   ldd tmp, Y+0xe
   mov R1, tmp
@@ -226,15 +225,13 @@ LED_DOWN:
   and tmp, R1
 
   out PORTB, tmp
-  ; PAUSE QntCnt, 50, LedCntBlue
+  DELAY Y+0x12, Y+0x0a, Y+0x02
 
   ; LED is UP now, so exit
   rjmp _RET_LED_DOWN
 
   _LED_DOWN_BUSY:
-    ; TODO Get pause state
-    ; ldd tmp, Y+5
-    ; std Y+5, tmp
+    DELAY_STATE Y+0x12, Y+0x02, _RET_LED_DOWN, _LED_DOWN_READY
 
   _LED_DOWN_READY:
     ; Read LED paramener address 

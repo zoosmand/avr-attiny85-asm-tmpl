@@ -29,8 +29,8 @@
 .equ LEDPORT    = PORTB
 .equ LEDPIN     = PINB
 .equ LEDBLUE    = PB1
-.equ LEDGREEN   = PB3
-.equ LEDRED     = PB4
+.equ LEDGREEN   = PB4
+.equ LEDRED     = PB3
 
 
 ; --- Register name definitions
@@ -64,9 +64,10 @@
 #define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
 #define INIT_RAM_CLR_CNT 128
-; #define INIT_SCHED_TMOUT 3
 
-;#define _LEDBLUE_PD_    ; Define Blue Led in Pull-Down Mode
+;#define _LEDBLUE_PD_   ; Define Blue Led in Pull-Down Mode
+;#define _LEDGREEN_PD_  ; Define Green Led in Pull-Down Mode
+;#define _LEDRED_PD_    ; Define Red Led in Pull-Down Mode
 
 
 ; --- Event REGistry Flag Definitions
