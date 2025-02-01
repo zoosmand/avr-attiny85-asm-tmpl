@@ -88,15 +88,15 @@ LED_BLUE:
   sbrs tmp, _BLAF_
   rjmp _RET_LED_BLUE
   
-  ; Store Counter address
+  ; Store params counter address in to LedReg
   ldi YH, high(LedReg+2)
   ldi YL, low(LedReg+2)
-  ldi tmpH, high(LedCntBlue)
-  ldi tmpL, low(LedCntBlue)
+  ldi tmpH, high(LedPrmBlue)
+  ldi tmpL, low(LedPrmBlue)
   std Y+0, tmpH
   std Y+1, tmpL
 
-  ; Redefine flags
+  ; Set Blue LED BUSY flags in to LedReg
   ldi YH, high(LedReg)
   ldi YL, low(LedReg)
   ld tmp, Y
@@ -104,9 +104,9 @@ LED_BLUE:
   sbr tmp, (1<<_BLBF_)
   st Y, tmp
 
-  ; Store Blue LED Flag
-  ldi YH, high(LedCntBlue+5)
-  ldi YL, low(LedCntBlue+5)
+  ; Store Blue LED UP Flag in to temporary register
+  ldi YH, high(LedPrmBlue+0x0f)
+  ldi YL, low(LedPrmBlue+0x0f)
   clr tmp
   sbr tmp, (1<<_LUF_)
   st Y, tmp
@@ -130,33 +130,34 @@ LED_UP:
   mov YL, tmpL
   ; Read temporary register
   ; Check Up Flag
-  ldd tmp, Y+5
+  ldd tmp, Y+0xf
   andi tmp, (1<<_LUF_)
   cpi tmp, (1<<_LUF_)
   brne _RET_LED_UP
   ; Check Busy Flag
-  ldd tmp, Y+5
+  ldd tmp, Y+0xf
   andi tmp, (1<<_LBF_)
   cpi tmp, (1<<_LBF_)
   breq _LED_UP_BUSY
   ; Set Busy Flag
-  ldd tmp, Y+5
+  ldd tmp, Y+0xf
   sbr tmp, (1<<_LBF_)
-  std Y+5, tmp
-  ; Read PIN board address
-  ldd ZH, Y+2
-  ldd ZL, Y+3
-  ; ldd tmpL, Y+3
-  ; Read PIN bit
-  ldd tmp, Y+4
+  std Y+0xf, tmp
 
-  ; TODO Update PORTB as a normal register
+  ; ; TODO For other AVR chips determine PORT by paramater's address
+  ; ; Read PORT board address
+  ; ldd XH, Y+2
+  ; ldd XL, Y+3
+
+  ; Read PIN bit
+  ldd tmp, Y+0xe
+
   mov R1, tmp
   in tmp, PORTB
   or tmp, R1 
 
   out PORTB, tmp
-  PAUSE QntCnt, 50, LedCntBlue
+  ; PAUSE QntCnt, 50, LedCntBlue
 
   ; LED is UP now, so exit
   rjmp _RET_LED_UP
@@ -176,10 +177,10 @@ LED_UP:
     mov YH, tmpH
     mov YL, tmpL
     ; Clear Flags in the temporary register
-    ldd tmp, Y+5
+    ldd tmp, Y+0xf
     cbr tmp, (1<<_LBF_)|(1<<_LUF_)
     sbr tmp, (1<<_LDF_)
-    std Y+5, tmp
+    std Y+0xf, tmp
 
   _RET_LED_UP:
     ret
@@ -198,35 +199,34 @@ LED_DOWN:
   mov YL, tmpL
   ; Read temporary register
   ; Check Up Flag
-  ldd tmp, Y+5
+  ldd tmp, Y+0xf
   andi tmp, (1<<_LDF_)
   cpi tmp, (1<<_LDF_)
   brne _RET_LED_DOWN
   ; Check Busy Flag
-  ldd tmp, Y+5
+  ldd tmp, Y+0xf
   andi tmp, (1<<_LBF_)
   cpi tmp, (1<<_LBF_)
   breq _LED_DOWN_BUSY
   ; Set Busy Flag
-  ldd tmp, Y+5
+  ldd tmp, Y+0xf
   sbr tmp, (1<<_LBF_)
-  std Y+5, tmp
-  ; Read PIN board address
-  ldd ZH, Y+2
-  ldd ZL, Y+3
-  ; ldd tmpL, Y+3
+  std Y+0xf, tmp
+  ; ; TODO For other AVR chips determine PORT by paramater's address
+  ; ; Read PORT board address
+  ; ldd ZH, Y+2
+  ; ldd ZL, Y+3
   ; Read PIN bit
-  ldd tmp, Y+4
+  ldd tmp, Y+0xe
   mov R1, tmp
   neg R1
   dec R1
 
-  ; TODO Update PORTB as a normal register
   in tmp, PORTB
   and tmp, R1
 
   out PORTB, tmp
-  PAUSE QntCnt, 50, LedCntBlue
+  ; PAUSE QntCnt, 50, LedCntBlue
 
   ; LED is UP now, so exit
   rjmp _RET_LED_DOWN
@@ -237,7 +237,7 @@ LED_DOWN:
     ; std Y+5, tmp
 
   _LED_DOWN_READY:
-    ; Read LED paramener address
+    ; Read LED paramener address 
     ldi ZH, high(LedReg)
     ldi ZL, low(LedReg)
     ldd tmpH, Z+2
@@ -246,9 +246,9 @@ LED_DOWN:
     mov YH, tmpH
     mov YL, tmpL
     ; Clear Flags in the temporary register
-    ldd tmp, Y+5
+    ldd tmp, Y+0xf
     cbr tmp, (1<<_LBF_)|(1<<_LDF_)
-    std Y+5, tmp
+    std Y+0xf, tmp
     ; Clear Active Flag in LED Regiser
     ld tmp, Z
     cbr tmp, (1<<_BLAF_)|(1<<_BLBF_)

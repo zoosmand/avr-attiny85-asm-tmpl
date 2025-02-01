@@ -28,12 +28,12 @@
 .include "./inc/init.inc"
 
 
-
+ 
 ; --- Main workflow
 MAIN:
   rcall SLEEP_MODE
 
-  SCHEDULER SecCnt, INIT_SCHED_TMOUT, SchCntBlue, LedReg, _BLAF_, _END_SCHED_01
+  SCHEDULER SecCnt, 5, LedPrmBlue, LedReg, _BLAF_, _END_SCHED_01
   _END_SCHED_01:
     nop
 
