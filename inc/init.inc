@@ -29,22 +29,17 @@ INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
 ; Load Counter address
 ldi YH, high(LedCntBlue)
 ldi YL, low(LedCntBlue)
-; Store the counter address
-mov tmpH, YH
-mov tmpL, YL
-std Y+3, tmpH
-std Y+2, tmpL
 ; Store LED PORT
-ldi tmpH, high(PORTB)
-ldi tmpL, low(PORTB)
-std Y+5, tmpH
-std Y+4, tmpL
+ldi tmpH, high(LEDPORT)
+ldi tmpL, low(LEDPORT)
+std Y+2, tmpH
+std Y+3, tmpL
 ; Store LED PIN
-ldi tmp, PINB1
-std Y+6, tmp
+ldi tmp, (1<<LEDBLUE)
+std Y+4, tmp
 ; Clear temporary register
 clr tmp
-std Y+7, tmp
+std Y+5, tmp
 
 
 ; --- Init Flag Register

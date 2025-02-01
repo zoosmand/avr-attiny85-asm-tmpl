@@ -79,59 +79,24 @@ INC_SEC_CNT:
 
 ; --
 LED_BLUE:
-  ; ldi YH, high(LedReg)
-  ; ldi YL, low(LedReg)
-  ; ld tmp, Y
-  ; mov R0, tmp
-  ; ldi tmp, (1<<_BLAF_)
-  ; mov R1, tmp
-  ; or R0, R1
-  ; mov tmp, R0
-  ; st Y, tmp
-
-
-  ; ldd tmp, Y+1
-
-  ; mov R0, tmp
-  ; ldi tmp, (1<<_BLUF_)
-  ; mov R1, tmp
-  ; or R0, R1
-  ; mov tmp, R0
-  ; std Y+1, tmp
-
-  ; ; Prepare Counter Address
-  ; ldi YH, high(LedReg+4)
-  ; ldi YL, low(LedReg+4)
-  ; ldi tmpH, high(LedCntBlue)
-  ; ldi tmpL, low(LedCntBlue)
-  ; std Y+0, tmpH 
-  ; std Y+1, tmpL 
-
-  ; rcall LED
-  ; ret
+  ; Read Flags
   ldi YH, high(LedReg)
   ldi YL, low(LedReg)
   ld tmp, Y
-
   sbrc tmp, _BLBF_
   rjmp _RET_LED_BLUE
-
   sbrs tmp, _BLAF_
   rjmp _RET_LED_BLUE
   
-  
-  ; ***
-
+  ; Store Counter address
   ldi YH, high(LedReg+2)
   ldi YL, low(LedReg+2)
-  ; Store Counter address
   ldi tmpH, high(LedCntBlue)
   ldi tmpL, low(LedCntBlue)
   std Y+0, tmpH
   std Y+1, tmpL
 
-  ; ***
-
+  ; Redefine flags
   ldi YH, high(LedReg)
   ldi YL, low(LedReg)
   ld tmp, Y
@@ -139,7 +104,7 @@ LED_BLUE:
   sbr tmp, (1<<_BLBF_)
   st Y, tmp
 
-  ; Store Leb UP flag
+  ; Store Blue LED Flag
   ldi YH, high(LedCntBlue+5)
   ldi YL, low(LedCntBlue+5)
   clr tmp
@@ -148,159 +113,147 @@ LED_BLUE:
 
   _RET_LED_BLUE:
     rcall LED_UP
+    rcall LED_DOWN
     ret
-
-
-
-; ; -- LED
-; LED:
-;   ; Load Flag from a tempopary register
-;   ldi YH, high(LedReg+2)
-;   ldi YL, low(LedReg+2)
-;   ld tmp, Y
-;   mov R0, tmp
-;   ldi YH, high(LedReg)
-;   ldi YL, low(LedReg)
-;   ld tmp, Y
-;   mov R1, tmp
-
-;   ; Branch if Active Flag Down
-;   and R1, R0
-;   cp R1, R0
-;   brne _RET_LED
-
-;   ; Clear Active Flag
-;   neg R1
-;   eor R0, R1
-;   and tmp, R0
-;   st Y, tmp
-
-;   ; Set Up Flag
-;   ; Load Flag from a tempopary register
-;   ldi YH, high(LedReg+3)
-;   ldi YL, low(LedReg+3)
-;   ld tmp, Y
-;   mov R0, tmp
-;   ldi YH, high(LedReg+1)
-;   ldi YL, low(LedReg+1)
-;   ld tmp, Y
-;   or tmp, R0
-;   st Y, tmp
-
-;   ret
-
-;   _RET_LED:
-;     rcall LED_UP
-;     rcall LED_DOWN
-;     ret
-
 
 
 
 ; ---
 LED_UP:
-
-  ldi YH, high(LedReg)
-  ldi YL, low(LedReg)
+  ; Read LED paramener address
+  ldi ZH, high(LedReg+2)
+  ldi ZL, low(LedReg+2)
+  ldd tmpH, Z+0 
+  ldd tmpL, Z+1 
+  ; Load parameters address
+  mov YH, tmpH
+  mov YL, tmpL
+  ; Read temporary register
+  ; Check Up Flag
   ldd tmp, Y+5
-  mov R0, Y
-  mov R1, Y
-
-  and R0, _LUF_
-  cpi R0, _LUF_
+  andi tmp, (1<<_LUF_)
+  cpi tmp, (1<<_LUF_)
   brne _RET_LED_UP
-
-  and R1, _LBF_
-  cpi R1, _LBF_
-  breq _RET_LED_UP
-
+  ; Check Busy Flag
+  ldd tmp, Y+5
+  andi tmp, (1<<_LBF_)
+  cpi tmp, (1<<_LBF_)
+  breq _LED_UP_BUSY
+  ; Set Busy Flag
+  ldd tmp, Y+5
   sbr tmp, (1<<_LBF_)
   std Y+5, tmp
-
-  ldd tmpH, Y+2
-  ldd tmpL, Y+3
+  ; Read PIN board address
+  ldd ZH, Y+2
+  ldd ZL, Y+3
+  ; ldd tmpL, Y+3
+  ; Read PIN bit
   ldd tmp, Y+4
 
-  sbi Y+2, 
+  ; TODO Update PORTB as a normal register
+  mov R1, tmp
+  in tmp, PORTB
+  or tmp, R1 
+
+  out PORTB, tmp
   PAUSE QntCnt, 50, LedCntBlue
 
-  ; ldi YH, high(LedReg+1)
-  ; ldi YL, low(LedReg+1)
-  ; ld tmp, Y
-  ; mov R1, tmp
+  ; LED is UP now, so exit
+  rjmp _RET_LED_UP
 
-  ; push R1
+  _LED_UP_BUSY:
+    ; TODO Get pause state
+    ; ldd tmp, Y+5
+    ; std Y+5, tmp
 
-  ; ; sbrs tmp, _BLUF_
-  ; ; rjmp _LED_UP_PAUSE_UP
+  _LED_UP_READY:
+    ; Read LED paramener address
+    ldi ZH, high(LedReg+2)
+    ldi ZL, low(LedReg+2)
+    ldd tmpH, Z+0 
+    ldd tmpL, Z+1 
+    ; Load parameters address
+    mov YH, tmpH
+    mov YL, tmpL
+    ; Clear Flags in the temporary register
+    ldd tmp, Y+5
+    cbr tmp, (1<<_LBF_)|(1<<_LUF_)
+    sbr tmp, (1<<_LDF_)
+    std Y+5, tmp
 
-  ; ; Branch if Active Flag Down
-  ; and R1, R0
-  ; cp R1, R0
-  ; brne _LED_UP_PAUSE_UP
-
-
-
-  ; sbrc tmp, _LPBF_
-  ; rjmp _RET_LED_UP
-
-  ; sbr tmp, (1<<_LPBF_)
-  ; st Y, tmp
-  ; sbi LEDPORT, LEDBLUE
-  ; PAUSE QntCnt, 50, LedCntBlue
-
-  ; _RET_LED_UP:
-  ;   ; 
-  ;   PAUSE_STATE QntCnt, LedCntBlue, LedReg+1, _BLUF_, _LED_UP_PAUSE_UP, _LED_UP_PAUSE_DOWN
-
-  ; _LED_UP_PAUSE_DOWN:
-  ;   ldi YH, high(LedReg+1)
-  ;   ldi YL, low(LedReg+1)
-  ;   ld tmp, Y
-
-  ;   cbr tmp, (1<<_BLUF_)|(1<<_LPBF_)
-  ;   sbr tmp, (1<<_BLDF_)
-  ;   st Y, tmp
-
-  ;   ret
-  
   _RET_LED_UP:
     ret
 
 
 
-; ; ---
-; LED_DOWN:
+; ---
+LED_DOWN:
+  ; Read LED paramener address
+  ldi ZH, high(LedReg+2)
+  ldi ZL, low(LedReg+2)
+  ldd tmpH, Z+0 
+  ldd tmpL, Z+1 
+  ; Load parameters address
+  mov YH, tmpH
+  mov YL, tmpL
+  ; Read temporary register
+  ; Check Up Flag
+  ldd tmp, Y+5
+  andi tmp, (1<<_LDF_)
+  cpi tmp, (1<<_LDF_)
+  brne _RET_LED_DOWN
+  ; Check Busy Flag
+  ldd tmp, Y+5
+  andi tmp, (1<<_LBF_)
+  cpi tmp, (1<<_LBF_)
+  breq _LED_DOWN_BUSY
+  ; Set Busy Flag
+  ldd tmp, Y+5
+  sbr tmp, (1<<_LBF_)
+  std Y+5, tmp
+  ; Read PIN board address
+  ldd ZH, Y+2
+  ldd ZL, Y+3
+  ; ldd tmpL, Y+3
+  ; Read PIN bit
+  ldd tmp, Y+4
+  mov R1, tmp
+  neg R1
+  dec R1
 
-;   ldi YH, high(LedReg+1)
-;   ldi YL, low(LedReg+1)
-;   ld tmp, Y
+  ; TODO Update PORTB as a normal register
+  in tmp, PORTB
+  and tmp, R1
 
-;   sbrs tmp, _BLDF_
-;   rjmp _RET_LED_DOWN
+  out PORTB, tmp
+  PAUSE QntCnt, 50, LedCntBlue
 
-;   sbrc tmp, _LPBF_
-;   rjmp _RET_LED_DOWN
+  ; LED is UP now, so exit
+  rjmp _RET_LED_DOWN
 
-;   sbr tmp, (1<<_LPBF_)
-;   st Y, tmp
-;   cbi LEDPORT, LEDBLUE
-;   PAUSE SecCnt, 1, LedCntBlue
+  _LED_DOWN_BUSY:
+    ; TODO Get pause state
+    ; ldd tmp, Y+5
+    ; std Y+5, tmp
 
-;   _RET_LED_DOWN:
-;     ; 
-;     PAUSE_STATE SecCnt, LedCntBlue, LedReg+1, _BLDF_, _LED_DOWN_PAUSE_UP, _LED_DOWN_PAUSE_DOWN
+  _LED_DOWN_READY:
+    ; Read LED paramener address
+    ldi ZH, high(LedReg)
+    ldi ZL, low(LedReg)
+    ldd tmpH, Z+2
+    ldd tmpL, Z+3
+    ; Load parameters address
+    mov YH, tmpH
+    mov YL, tmpL
+    ; Clear Flags in the temporary register
+    ldd tmp, Y+5
+    cbr tmp, (1<<_LBF_)|(1<<_LDF_)
+    std Y+5, tmp
+    ; Clear Active Flag in LED Regiser
+    ld tmp, Z
+    cbr tmp, (1<<_BLAF_)|(1<<_BLBF_)
+    st Z, tmp
 
-;   _LED_DOWN_PAUSE_DOWN:
-;     ldi YH, high(LedReg+1)
-;     ldi YL, low(LedReg+1)
-;     ld tmp, Y
-
-;     cbr tmp, (1<<_BLDF_)|(1<<_LPBF_)
-;     st Y, tmp
-
-;     ret
-  
-;   _LED_DOWN_PAUSE_UP:
-;     ret
+  _RET_LED_DOWN:
+    ret
 
