@@ -10,25 +10,27 @@
 .equ F_CPU = 16384000 ; CPU frequency defined as 16 MHz
 
 ; --- Frequently used register definitions 
-.def dClock   = R12
-.def dRate    = R13
-.def txByte   = R14
-.def rxByte   = R15
-.def tmp      = R16
-.def _EREG_   = R17
-.def tmpLL    = R18
-.def tmpLH    = R19
-.def tmpHL    = R20
-.def tmpHH    = R21
-.def cntLL    = R22
-.def cntLH    = R23
-.def cntHL    = R24
-.def cntHH    = R25
+.def dClock     = R12
+.def dRate      = R13
+.def txByte     = R14
+.def rxByte     = R15
+.def tmp        = R16
+.def _EREG_     = R17
+.def tmpLL      = R18
+.def tmpLH      = R19
+.def tmpHL      = R20
+.def tmpHH      = R21
+.def cntLL      = R22
+.def cntLH      = R23
+.def cntHL      = R24
+.def cntHH      = R25
 
-.equ LEDDDR   = DDRB
-.equ LEDPORT  = PORTB
-.equ LEDPIN   = PINB
-.equ LEDBLUE  = PB1
+.equ LEDDDR     = DDRB
+.equ LEDPORT    = PORTB
+.equ LEDPIN     = PINB
+.equ LEDBLUE    = PB1
+.equ LEDGREEN   = PB4
+.equ LEDRED     = PB3
 
 
 ; --- Register name definitions
@@ -61,23 +63,24 @@
 ; --- Constant definitions
 #define QNT_THRESHOLD 240 ; it gives 16 prescaler for 1ms system quant
 #define SEC_THRESHOLD 1000
-#define INIT_RAM_CLR_CNT 32
-#define INIT_SCHED_TMOUT 3
+#define INIT_RAM_CLR_CNT 128
 
-;#define _LEDBLUE_PD_    ; Define Blue Led in Pull-Down Mode
+;#define _LEDBLUE_PD_   ; Define Blue Led in Pull-Down Mode
+;#define _LEDGREEN_PD_  ; Define Green Led in Pull-Down Mode
+;#define _LEDRED_PD_    ; Define Red Led in Pull-Down Mode
 
 
 ; --- Event REGistry Flag Definitions
-.equ _QIF_    = 0       ; System Quant Interval Flag
-.equ _SMF_    = 1       ; Sleep Mode Flag
+.equ _QIF_   = 0       ; System Quant Interval Flag
+.equ _SMF_   = 1       ; Sleep Mode Flag
 
-.equ _BLAF_    = 0       ; Blue LED Active Flag
-.equ _GLAF_    = 1       ; Green LED Active Flag
-.equ _RLAF_    = 2       ; Red LED Active Flag
-.equ _LPBF_    = 7       ; LED Pause Counter is Busy Flag
-.equ _BLUF_    = 0       ; Blue LED On Flag
-.equ _BLDF_    = 1       ; Blue LED Off Flag
-.equ _GLUF_    = 2       ; Green LED On Flag
-.equ _GLDF_    = 3       ; Green LED Off Flag
-.equ _RLUF_    = 4       ; Red LED On Flag
-.equ _RLDF_    = 5       ; Red LED Off Flag
+.equ _BLAF_  = 0       ; Blue LED Active Flag
+.equ _GLAF_  = 1       ; Green LED Active Flag
+.equ _RLAF_  = 2       ; Red LED Active Flag
+.equ _BLBF_  = 5       ; Blue LED Busy Flag
+.equ _GLBF_  = 6       ; Green LED Busy Flag
+.equ _RLBF_  = 7       ; Red LED Busy Flag
+
+.equ _LUF_   = 0       ; LED Up Flag
+.equ _LDF_   = 1       ; LED Down Flag
+.equ _LBF_   = 7       ; LED Busy Flag
