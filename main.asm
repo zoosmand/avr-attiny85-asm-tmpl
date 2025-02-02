@@ -37,15 +37,21 @@ MAIN:
   _END_SCHED_01:
     nop
 
+  SCHEDULER SecCnt, 7, LedPrmGreen, LedReg, _GLAF_, _END_SCHED_02
+  _END_SCHED_02:
+    nop
+
   rcall INC_QNT_CNT
 
   rcall LED_BLUE
+  rcall LED_GREEN
 
   rjmp MAIN
   rjmp THE_END
 
 .include "./inc/interrupts.inc"
 .include "./inc/utils.inc"
+.include "./inc/led.inc"
 
 
 ; --- Emergency Exit and Reboot
