@@ -37,12 +37,8 @@
   ldi tmpH, high(@1)
   ldi tmpL, low(@1)
   ; Set the new threshold
-  clc
-  adc cntL, tmpL
-  in tmp, SREG
-  sbrc tmp, SREG_C
-  inc cntH
-  add cntH, tmpH
+  add cntL, tmpL
+  adc cntH, tmpH
   ; Store the new threshold
   st Y, cntL
   st -Y, cntH

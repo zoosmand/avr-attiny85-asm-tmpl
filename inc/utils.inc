@@ -61,11 +61,8 @@ INC_SEC_CNT:
   ldi tmpH, high(SEC_THRESHOLD)
 
   ; Increase the next second quants counter value
-  adc _cntL, tmpL
-  in tmp, SREG
-  sbrc tmp, SREG_C
-  inc _cntH
-  add _cntH, tmpH
+  add _cntL, tmpL
+  adc _cntH, tmpH
 
   ; Store the new value 
   st Y, _cntL

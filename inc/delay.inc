@@ -26,12 +26,8 @@
   ldd tmpH, @1+0
   ldd tmpL, @1+1
   ; Set new threshold
-  clc
-  adc cntL, tmpL
-  in tmp, SREG
-  sbrc tmp, SREG_C
-  inc cntH
-  add cntH, tmpH
+  add cntL, tmpL
+  adc cntH, tmpH
   ; Store new threshold
   std @2+0, cntH
   std @2+1, cntL

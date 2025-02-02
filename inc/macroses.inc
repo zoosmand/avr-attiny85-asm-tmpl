@@ -74,10 +74,11 @@
   ldi YL, low(@0)
   ld tmpH, Y+
   ld tmpL, Y
-  inc tmpL
-  in tmp, SREG
-  sbrc tmp, SREG_Z
-  inc tmpH
+  ldi tmp, 0x01
+  mov R0, tmp
+  clr R1
+  add tmpL, R0
+  adc tmpH, R1
   st Y, tmpL
   st -Y, tmpH
   
