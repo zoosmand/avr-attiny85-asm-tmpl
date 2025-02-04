@@ -13,7 +13,8 @@
 ; Static data stored with the code
 .cseg
 ;  WH1602A_symb: .db "Hallo!!!"
-LebBluePrm:     .db (1<<LEDBLUE), 0
+LedBluePrm:     .db (1<<LEDBLUE), 0
+LedGreenPrm:    .db (1<<LEDGREEN), 0
 
 
 ; SRAM data segment

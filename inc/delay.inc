@@ -52,11 +52,10 @@
   ld _cntH, X+
   ld _cntL, X
   ; Compare counters
+  ; TODO Fix comparison
   cp cntL, _cntL
   brne @2 ; exit if not equal
   cp cntH, _cntH
   brne @2 ; exit if not equal
-
-  ; rjmp @3 ; exit if equal
 
 .ENDMACRO

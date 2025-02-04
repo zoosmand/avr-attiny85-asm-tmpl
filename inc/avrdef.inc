@@ -74,9 +74,9 @@
 .equ _QIF_    = 0       ; System Quant Interval Flag
 .equ _SMF_    = 1       ; Sleep Mode Flag
 
-.equ _BLF_    = 8       ; Blue LED Active Flag
-.equ _GLF_    = 10      ; Green LED Active Flag
-.equ _RLF_    = 20      ; Red LED Active Flag
+.equ _BLF_    = 3       ; Blue LED Active Flag
+.equ _GLF_    = 4       ; Green LED Active Flag
+.equ _RLF_    = 5       ; Red LED Active Flag
 
 ; LED manage commands
 .equ _LUP_    = 0b0000001 ; Up a given LED
