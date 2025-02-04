@@ -46,7 +46,7 @@
   ldi YH, high(@3)
   ldi YL, low(@3)
   ld tmp, Y
-  sbr tmp, (1<<@4)
+  ori tmp, @4
   st Y, tmp
 
 .ENDMACRO
