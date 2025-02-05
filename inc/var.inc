@@ -15,6 +15,7 @@
 ;  WH1602A_symb: .db "Hallo!!!"
 LedBluePrm:     .db (1<<LEDBLUE), 0
 LedGreenPrm:    .db (1<<LEDGREEN), 0
+LedRedPrm:      .db (1<<LEDRED), 0
 
 
 ; SRAM data segment

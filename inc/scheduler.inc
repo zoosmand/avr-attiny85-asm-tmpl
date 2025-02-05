@@ -13,9 +13,8 @@
 ; 0 - counter
 ; 1 - interval
 ; 2 - threshold
-; 3 - register
-; 4 - flag
-; 5 - return point
+; 3 - command
+; 4 - exit point
 .MACRO SCHEDULER
   ; Load counter
   ldi ZL, low(@0)
@@ -29,24 +28,21 @@
   ld _cntL, Y
   ; Compate counters
   cp cntL, _cntL
-  brne @5 ; exit if not equal
+  brne @4 ; exit if not equal
   cp cntH, _cntH
-  brne @5 ; exit if not equal
+  brne @4 ; exit if not equal
 
-  ; Load schedule interval value
+  ; Set the new threshold
   ldi tmpH, high(@1)
   ldi tmpL, low(@1)
-  ; Set the new threshold
   add cntL, tmpL
   adc cntH, tmpH
-  ; Store the new threshold
   st Y, cntL
   st -Y, cntH
-  ; Raise flag in the given registry
-  ldi YH, high(@3)
-  ldi YL, low(@3)
-  ld tmp, Y
-  ori tmp, @4
+  ; Set the command
+  ldi YL, low(@2+4)
+  ldi YH, high(@2+4)
+  ldi tmp, @3
   st Y, tmp
 
 .ENDMACRO
