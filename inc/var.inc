@@ -24,15 +24,21 @@ LedRedPrm:      .db (1<<LEDRED),    0
 .org 0x0060
 ;                   cntr    owfcnt
 QntCnt:         .dw 0x0000, 0x0000
+
 ;                   cntr
 SecCnt:         .dw 0x0000
+
+;                   prmadr  stkadr
+;                    00 01   02 03
+LedCache:       .dw 0x0000, 0x0000
+
 ;                   schcnt  delcnt  cmd
 ;                    00 01   02 03   04 05
-.org 0x070
-LedBlueStack:   .dw 0x0000, 0x0000, 0x0000
 .org 0x080
-LedGreenStack:  .dw 0x0000, 0x0000, 0x0000
+LedBlueStack:   .dw 0x0000, 0x0000, 0x0000
 .org 0x090
+LedGreenStack:  .dw 0x0000, 0x0000, 0x0000
+.org 0x0a0
 LedRedStack:    .dw 0x0000, 0x0000, 0x0000
 
 

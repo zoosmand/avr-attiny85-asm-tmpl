@@ -18,18 +18,16 @@
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld cntH, X+
-  ld cntL, X
   ; Load interval
   ldi tmpH, high(@2)
   ldi tmpL, low(@2)
+  ld cntL, X
   ; Set new threshold
   add cntL, tmpL
   adc cntH, tmpH
   ; Store new threshold
-  ldi XH, high(@1)
-  ldi XL, low(@1)
-  st X+, cntH
-  st X, cntL
+  std @1+0, cntH
+  std @1+1, cntL
 
 .ENDMACRO
 
@@ -40,16 +38,14 @@
 ; 1 - threshold counter
 ; 2 - exit link pause runs
 .MACRO DELAY_STATE
+  ; Load threshold counter
+  ldd _cntH, @1+0
+  ldd _cntL, @1+1
   ; Load source counter
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld cntH, X+
   ld cntL, X
-  ; Load threshold counter
-  ldi XH, high(@1)
-  ldi XL, low(@1)
-  ld _cntH, X+
-  ld _cntL, X
   ; Compare counters
   cp cntL, _cntL
   brne @2 ; exit if not equal
