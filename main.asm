@@ -33,23 +33,23 @@
 MAIN:
   rcall SLEEP_MODE
 
-  SCHEDULER SecCnt, 4, LedBlueStack, _LUP_, _END_SCHED_01
-  _END_SCHED_01:
-    nop
+  SCHEDULER SecCnt, 4, LedBlueStack, _LUP_, LED_BLUE
+  ; _END_SCHED_01:
+  ;   nop
 
-  SCHEDULER SecCnt, 5, LedGreenStack, _LUP_, _END_SCHED_02
-  _END_SCHED_02:
-    nop
+  SCHEDULER SecCnt, 5, LedGreenStack, _LUP_, LED_GREEN
+  ; _END_SCHED_02:
+  ;   nop
 
-  SCHEDULER SecCnt, 3, LedRedStack, _LUP_, _END_SCHED_03
-  _END_SCHED_03:
-    nop
+  SCHEDULER SecCnt, 3, LedRedStack, _LUP_, LED_RED
+  ; _END_SCHED_03:
+  ;   nop
 
-  rcall INC_QNT_CNT
+  ; rcall INC_QNT_CNT
 
-  rcall LED_BLUE
-  rcall LED_GREEN
-  rcall LED_RED
+  ; rcall LED_BLUE
+  ; rcall LED_GREEN
+  ; rcall LED_RED
 
   rjmp MAIN
   rjmp THE_END

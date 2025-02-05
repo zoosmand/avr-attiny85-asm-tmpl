@@ -26,11 +26,12 @@
   ldi YH, high(@2)
   ld _cntH, Y+
   ld _cntL, Y
+  ; TODO Fix comparison
   ; Compate counters
   cp cntL, _cntL
-  brne @4 ; exit if not equal
+  brne _RUNNER ; exit if not equal
   cp cntH, _cntH
-  brne @4 ; exit if not equal
+  brne _RUNNER ; exit if not equal
 
   ; Set the new threshold
   ldi tmpH, high(@1)
@@ -44,6 +45,9 @@
   ldi YH, high(@2+4)
   ldi tmp, @3
   st Y, tmp
+
+  _RUNNER:
+    rcall @4
 
 .ENDMACRO
 
