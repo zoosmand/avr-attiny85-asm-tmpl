@@ -25,11 +25,6 @@ INIT_DATA SRAM_START, INIT_RAM_CLR_CNT
 ; Then, the second one
 ; INIT_DATA SRAM_START+(SRAM_SIZE/2)+1, (SRAM_SIZE/2)-1
 
-; ; --- Init LED parameters
-; INIT_LED_PARAM LedPrmBlue, 0x0019, 0x0002, LEDPORT, LEDBLUE, QntCnt, SecCnt
-; INIT_LED_PARAM LedPrmGreen, 0x0032, 0x0004, LEDPORT, LEDGREEN, QntCnt, SecCnt
-; INIT_LED_PARAM LedPrmRed, 0x0064, 0x00f0, LEDPORT, LEDRED, QntCnt, QntCnt
-
 ; --- Init Flag Register
 INIT_FLAGS:
   clr _EREG_

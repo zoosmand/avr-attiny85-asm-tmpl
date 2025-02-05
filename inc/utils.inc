@@ -41,32 +41,24 @@ INC_SEC_CNT:
   ldi YL, low(QntCnt+2)
   ldi YH, high(QntCnt+2)
 
-  ; Load and compare the Low bytes
-  ; exit if not equal
+  ; compate the current counter and the threshold counter
   ld cntH, X+
   ld cntL, X
   ld _cntH, Y+
   ld _cntL, Y
-
   cp cntL, _cntL
-  brne _RET_INC_SEC_CNT
-
-  ; Compare the High bytes
-  ; exit if not equal
+  brne _RET_INC_SEC_CNT ; exit if not equal
   cp cntH, _cntH
-  brne _RET_INC_SEC_CNT
-
-  ; Load limit
-  ldi tmpL, low(SEC_THRESHOLD)
-  ldi tmpH, high(SEC_THRESHOLD)
+  brne _RET_INC_SEC_CNT ; exit if not equal
 
   ; Increase the next second quants counter value
+  ldi tmpL, low(SEC_THRESHOLD)
+  ldi tmpH, high(SEC_THRESHOLD)
   add _cntL, tmpL
   adc _cntH, tmpH
-
-  ; Store the new value 
   st Y, _cntL
   st -Y, _cntH
+
   ; Increment seconds counter
   INC_CNT SecCnt
 

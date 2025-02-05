@@ -1,12 +1,10 @@
 
 ; --
 LED_BLUE:
-  ; Read Led Register
+  ; read command and route the program
   ldi YH, high(LedBlueStack+4)
   ldi YL, low(LedBlueStack+4)
   ld tmp, Y
-  ; andi tmp, ((1<<_BLF_)|0b111) ; three low bits are command, five high bits are LEDs
-  ; Read command
   cpi tmp, _LUP_
   breq _LED_BLUE_UP
   cpi tmp, _LUC_
@@ -43,13 +41,13 @@ LED_BLUE_UP:
   in tmp, PORTB
   or tmp, r1 
   out PORTB, tmp
-  ; set up a delay
-  DELAY QntCnt, LedBlueStack+2, 25 ; 25ms delay, store threshold in the BlueLedStack
+  ; set up a 25ms delay
+  DELAY QntCnt, LedBlueStack+2, 25
   ; set _LUC_ aka check delay status command
   ldi XH, high(LedBlueStack+4)
   ldi XL, low(LedBlueStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LUC_
   st X, tmp
   ret
@@ -61,7 +59,7 @@ LED_BLUE_UP_DELAY:
   ldi XH, high(LedBlueStack+4)
   ldi XL, low(LedBlueStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LDW_
   st X, tmp
   
@@ -79,13 +77,13 @@ LED_BLUE_DOWN:
   in tmp, PORTB
   and tmp, r0
   out PORTB, tmp
-  ; set up a delay
-  DELAY QntCnt, LedBlueStack+2, 25 ; 25ms delay, store threshold in the BlueLedStack
+  ; set up a 25ms delay
+  DELAY QntCnt, LedBlueStack+2, 25
   ; set _LDC_ command onto LED registry
   ldi XH, high(LedBlueStack+4)
   ldi XL, low(LedBlueStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LDC_
   st X, tmp
   ret
@@ -97,7 +95,7 @@ LED_BLUE_DOWN_DELAY:
   ldi XH, high(LedBlueStack+4)
   ldi XL, low(LedBlueStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   st X, tmp
   
   _LED_BLUE_DOWN_DELAY_END:
@@ -110,12 +108,10 @@ LED_BLUE_DOWN_DELAY:
 
 ; --
 LED_GREEN:
-  ; Read Led Register
+  ; read command and route the program
   ldi YH, high(LedGreenStack+4)
   ldi YL, low(LedGreenStack+4)
   ld tmp, Y
-  ; andi tmp, ((1<<_GLF_)|0b111) ; three low bits are command, five high bits are LEDs
-  ; Read command
   cpi tmp, _LUP_
   breq _LED_GREEN_UP
   cpi tmp, _LUC_
@@ -152,13 +148,13 @@ LED_GREEN_UP:
   in tmp, PORTB
   or tmp, r1 
   out PORTB, tmp
-  ; set up a delay
-  DELAY QntCnt, LedGreenStack+2, 25 ; 25ms delay, store threshold in the GREENLedStack
+  ; set up a 25ms delay
+  DELAY QntCnt, LedGreenStack+2, 25
   ; set _LUC_ aka check delay status command
   ldi XH, high(LedGreenStack+4)
   ldi XL, low(LedGreenStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LUC_
   st X, tmp
   ret
@@ -170,7 +166,7 @@ LED_GREEN_UP_DELAY:
   ldi XH, high(LedGreenStack+4)
   ldi XL, low(LedGreenStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LDW_
   st X, tmp
   
@@ -188,13 +184,13 @@ LED_GREEN_DOWN:
   in tmp, PORTB
   and tmp, r0
   out PORTB, tmp
-  ; set up a delay
-  DELAY QntCnt, LedGreenStack+2, 25 ; 25ms delay, store threshold in the GREENLedStack
+  ; set up a 25ms delay
+  DELAY QntCnt, LedGreenStack+2, 25
   ; set _LDC_ command onto LED registry
   ldi XH, high(LedGreenStack+4)
   ldi XL, low(LedGreenStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LDC_
   st X, tmp
   ret
@@ -206,7 +202,7 @@ LED_GREEN_DOWN_DELAY:
   ldi XH, high(LedGreenStack+4)
   ldi XL, low(LedGreenStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   st X, tmp
   
   _LED_GREEN_DOWN_DELAY_END:
@@ -217,12 +213,10 @@ LED_GREEN_DOWN_DELAY:
 
 ; --
 LED_RED:
-  ; Read Led Register
+  ; read command and route the program
   ldi YH, high(LedRedStack+4)
   ldi YL, low(LedRedStack+4)
   ld tmp, Y
-  ; andi tmp, ((1<<_GLF_)|0b111) ; three low bits are command, five high bits are LEDs
-  ; Read command
   cpi tmp, _LUP_
   breq _LED_RED_UP
   cpi tmp, _LUC_
@@ -259,13 +253,13 @@ LED_RED_UP:
   in tmp, PORTB
   or tmp, r1 
   out PORTB, tmp
-  ; set up a delay
-  DELAY QntCnt, LedRedStack+2, 25 ; 25ms delay, store threshold in the GREENLedStack
+  ; set up a 25ms delay
+  DELAY QntCnt, LedRedStack+2, 25
   ; set _LUC_ aka check delay status command
   ldi XH, high(LedRedStack+4)
   ldi XL, low(LedRedStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LUC_
   st X, tmp
   ret
@@ -277,7 +271,7 @@ LED_RED_UP_DELAY:
   ldi XH, high(LedRedStack+4)
   ldi XL, low(LedRedStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LDW_
   st X, tmp
   
@@ -295,13 +289,13 @@ LED_RED_DOWN:
   in tmp, PORTB
   and tmp, r0
   out PORTB, tmp
-  ; set up a delay
-  DELAY QntCnt, LedRedStack+2, 25 ; 25ms delay, store threshold in the REDLedStack
+  ; set up a 25ms delay
+  DELAY QntCnt, LedRedStack+2, 25
   ; set _LDC_ command onto LED registry
   ldi XH, high(LedRedStack+4)
   ldi XL, low(LedRedStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   ori tmp, _LDC_
   st X, tmp
   ret
@@ -313,7 +307,7 @@ LED_RED_DOWN_DELAY:
   ldi XH, high(LedRedStack+4)
   ldi XL, low(LedRedStack+4)
   ld tmp, X
-  andi tmp, 0b11111000
+  andi tmp, _LCMSK_
   st X, tmp
   
   _LED_RED_DOWN_DELAY_END:

@@ -39,7 +39,6 @@
 ; 0 - source counter address
 ; 1 - threshold counter
 ; 2 - exit link pause runs
-; 3 - exit link pause ends
 .MACRO DELAY_STATE
   ; Load source counter
   ldi XH, high(@0)
@@ -52,7 +51,6 @@
   ld _cntH, X+
   ld _cntL, X
   ; Compare counters
-  ; TODO Fix comparison
   cp cntL, _cntL
   brne @2 ; exit if not equal
   cp cntH, _cntH

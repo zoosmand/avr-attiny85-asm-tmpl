@@ -74,12 +74,9 @@
 .equ _QIF_    = 0       ; System Quant Interval Flag
 .equ _SMF_    = 1       ; Sleep Mode Flag
 
-.equ _BLF_    = 3       ; Blue LED Active Flag
-.equ _GLF_    = 4       ; Green LED Active Flag
-.equ _RLF_    = 5       ; Red LED Active Flag
-
 ; LED manage commands
-.equ _LUP_    = 0b0000001 ; Up a given LED
-.equ _LUC_    = 0b0000010 ; Check state while given LED is up
-.equ _LDW_    = 0b0000101 ; Down given LED
-.equ _LDC_    = 0b0000110 ; Check state while given LED is down
+.equ _LCMSK_  = 0b11111000  ; LED commands mask
+.equ _LUP_    = 0b00000001  ; Up a given LED
+.equ _LUC_    = 0b00000010  ; Check state while given LED is up
+.equ _LDW_    = 0b00000101  ; Down given LED
+.equ _LDC_    = 0b00000110  ; Check state while given LED is down

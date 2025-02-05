@@ -14,7 +14,7 @@
 ; 1 - interval
 ; 2 - threshold
 ; 3 - command
-; 4 - exit point
+; 4 - task to run
 .MACRO SCHEDULER
   ; Load counter
   ldi ZL, low(@0)
@@ -26,13 +26,11 @@
   ldi YH, high(@2)
   ld _cntH, Y+
   ld _cntL, Y
-  ; TODO Fix comparison
   ; Compate counters
   cp cntL, _cntL
   brne _RUNNER ; exit if not equal
   cp cntH, _cntH
   brne _RUNNER ; exit if not equal
-
   ; Set the new threshold
   ldi tmpH, high(@1)
   ldi tmpL, low(@1)
@@ -45,7 +43,6 @@
   ldi YH, high(@2+4)
   ldi tmp, @3
   st Y, tmp
-
   _RUNNER:
     rcall @4
 
