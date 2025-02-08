@@ -26,11 +26,11 @@
   ldi YH, high(@2)
   ld _cntH, Y+
   ld _cntL, Y
-  ; Compate counters
+  ; Compare counters
   cp cntL, _cntL
-  brne _RUNNER ; exit if not equal
+  brne _RUNNER_@4 ; exit if not equal
   cp cntH, _cntH
-  brne _RUNNER ; exit if not equal
+  brne _RUNNER_@4 ; exit if not equal
   ; Set the new threshold
   ldi tmpH, high(@1)
   ldi tmpL, low(@1)
@@ -43,7 +43,7 @@
   ldi YH, high(@2+4)
   ldi tmp, @3
   st Y, tmp
-  _RUNNER:
+  _RUNNER_@4:
     rcall @4
 
 .ENDMACRO

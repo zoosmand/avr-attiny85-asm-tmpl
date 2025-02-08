@@ -9,19 +9,16 @@
 
 
 
-; --- Set pause
+; --- Sets pause
 ; 0 - sourse counter address
-; 1 - interval
-; 2 - threshold counter
+; 1 - threshold counter
 .MACRO DELAY
   ; Load source counter
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld cntH, X+
-  ; Load interval
-  ldi tmpH, high(@2)
-  ldi tmpL, low(@2)
   ld cntL, X
+  ; Interval already loaded into tmpH:tmpL
   ; Set new threshold
   add cntL, tmpL
   adc cntH, tmpH

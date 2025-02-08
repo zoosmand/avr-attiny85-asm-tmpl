@@ -14,7 +14,7 @@
 ;  WH1602A_symb: .db "Hallo!!!"
 ;                   PIN             delup   deldw
 ;                   00              02      04
-LedBluePrm:     .dw (1<<LEDBLUE),   25,     25
+LedBluePrm:     .dw (1<<LEDBLUE),   12,     25
 LedGreenPrm:    .dw (1<<LEDGREEN),  25,     25
 LedRedPrm:      .dw (1<<LEDRED),    25,     25
 

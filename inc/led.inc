@@ -8,7 +8,7 @@
 ;
 
 
-; --- Runs Blue LED app
+; --- Runs Blue LED routine
 LED_BLUE:
   ; write Blue Led parameter address onto cache
   ldi ZH, high(2*LedBluePrm)
@@ -26,12 +26,12 @@ LED_BLUE:
   mov tmpL, ZL
   st Y+, tmpH
   st Y, tmpL
-  ; run Led app
+  ; run Led routine
   rcall LED
   ret
 
 
-; --- Runs Green LED app
+; --- Runs Green LED routine
 LED_GREEN:
   ; write Green Led parameter address onto cache
   ldi ZH, high(2*LedGreenPrm)
@@ -49,12 +49,12 @@ LED_GREEN:
   mov tmpL, ZL
   st Y+, tmpH
   st Y, tmpL
-  ; run Led app
+  ; run Led routine
   rcall LED
   ret
 
 
-; --- Runs Red LED app
+; --- Runs Red LED routine
 LED_RED:
   ; write Red Led parameter address onto cache
   ldi ZH, high(2*LedRedPrm)
@@ -72,12 +72,12 @@ LED_RED:
   mov tmpL, ZL
   st Y+, tmpH
   st Y, tmpL
-  ; run Led app
+  ; run Led routine
   rcall LED
   ret
 
 
-; --- Serves LEDs app
+; --- Serves LEDs routine
 LED:
   ; read command and route the program
   ; +++ get parameter address from .dseg 
@@ -117,36 +117,43 @@ _LED_DOWN_DELAY:
 
 LED_UP:
   ; turn LED on
-  ; +++ get parameter address from .cseg 
+  ; +++ get parameter address from cache
   ldi ZH, high(LedCache)
   ldi ZL, low(LedCache)
-  ld tmpH, Z+
-  ld tmpL, Z
-  mov ZH, tmpH
-  mov ZL, tmpL
+  ld _cntH, Z+
+  ld _cntL, Z
+  mov ZH, _cntH
+  mov ZL, _cntL
   lpm tmp, Z
   mov r1, tmp
   in tmp, PORTB
   or tmp, r1 
   out PORTB, tmp
-  ; set up a 25ms delay
-  ; +++ get parameter address from .dseg 
+  ; set up delay
+  ; +++ get interval from cache
+  adiw _cntH:_cntL, 2
+  mov ZH, _cntH
+  mov ZL, _cntL
+  ; +++ reverse Big Endian
+  lpm tmpL, Z+
+  lpm tmpH, Z
+  ; +++ get delay counter address from cache 
   ldi YH, high(LedCache+2)
   ldi YL, low(LedCache+2)
   ld _cntH, Y+
   ld _cntL, Y
-  ; +++ offset address for getting delay counter address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 2
   mov YH, _cntH
   mov YL, _cntL
-  DELAY QntCnt, Y, 25
-  ; set _LUC_ aka check delay status command
-  ; +++ get parameter address from .dseg 
+  DELAY QntCnt, Y
+  ; set Led command (_LUC_), write to cache
+  ; +++ get command address from cache 
   ldi XH, high(LedCache+2)
   ldi XL, low(LedCache+2)
   ld _cntH, X+
   ld _cntL, X
-  ; +++ offset address for getting command address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 4
   mov XH, _cntH
   mov XL, _cntL
@@ -158,23 +165,23 @@ LED_UP:
 
 LED_UP_DELAY:
   ; check delay status
-  ; +++ get parameter address from .dseg 
+  ; +++ get delay counter address from cache 
   ldi YH, high(LedCache+2)
   ldi YL, low(LedCache+2)
   ld _cntH, Y+
   ld _cntL, Y
-  ; +++ offset address for getting delay counter address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 2
   mov YH, _cntH
   mov YL, _cntL
   DELAY_STATE QntCnt, Y, _LED_UP_DELAY_END
-  ; set _LDW_ command onto LED registry
-  ; +++ get parameter address from .dseg 
+  ; set Led Down command (_LDW_), write to cache
+  ; +++ get command address from cache 
   ldi XH, high(LedCache+2)
   ldi XL, low(LedCache+2)
   ld _cntH, X+
   ld _cntL, X
-  ; +++ offset address for getting command address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 4
   mov XH, _cntH
   mov XL, _cntL
@@ -188,13 +195,13 @@ LED_UP_DELAY:
 
 LED_DOWN:
   ; turn LED off
-  ; +++ get parameter address from .cseg 
+  ; +++ get parameter address from cache 
   ldi ZH, high(LedCache)
   ldi ZL, low(LedCache)
-  ld tmpH, Z+
-  ld tmpL, Z
-  mov ZH, tmpH
-  mov ZL, tmpL
+  ld _cntH, Z+
+  ld _cntL, Z
+  mov ZH, _cntH
+  mov ZL, _cntL
   lpm tmp, Z
   mov r0, tmp
   neg r0
@@ -202,24 +209,31 @@ LED_DOWN:
   in tmp, PORTB
   and tmp, r0
   out PORTB, tmp
-  ; set up a 25ms delay
-  ; +++ get parameter address from .dseg 
+  ; set up delay
+  ; +++ get interval from cache
+  adiw _cntH:_cntL, 4
+  mov ZH, _cntH
+  mov ZL, _cntL
+  ; +++ reverse Big Endian
+  lpm tmpL, Z+
+  lpm tmpH, Z
+  ; +++ get delay counter address from cache
   ldi YH, high(LedCache+2)
   ldi YL, low(LedCache+2)
   ld _cntH, Y+
   ld _cntL, Y
-  ; +++ offset address for getting delay counter address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 2
   mov YH, _cntH
   mov YL, _cntL
-  DELAY QntCnt, Y, 25
-  ; set _LDC_ command onto LED registry
-  ; +++ get parameter address from .dseg 
+  DELAY QntCnt, Y
+  ; set Led command (_LDC_), write to cache
+  ; +++ get command address from cache 
   ldi XH, high(LedCache+2)
   ldi XL, low(LedCache+2)
   ld _cntH, X+
   ld _cntL, X
-  ; +++ offset address for getting command address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 4
   mov XH, _cntH
   mov XL, _cntL
@@ -231,23 +245,23 @@ LED_DOWN:
 
 LED_DOWN_DELAY:
   ; check delay status
-  ; +++ get parameter address from .dseg 
+  ; +++ get delay counter address from cache 
   ldi YH, high(LedCache+2)
   ldi YL, low(LedCache+2)
   ld _cntH, Y+
   ld _cntL, Y
-  ; +++ offset address for getting delay counter address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 2
   mov YH, _cntH
   mov YL, _cntL
   DELAY_STATE QntCnt, Y, _LED_DOWN_DELAY_END
-  ; clear commands in LED registry 
-  ; +++ get parameter address from .dseg 
+  ; clear Led commands
+  ; +++ get command address from cache 
   ldi XH, high(LedCache+2)
   ldi XL, low(LedCache+2)
   ld _cntH, X+
   ld _cntL, X
-  ; +++ offset address for getting command address
+  ; +++ offset for specific address
   adiw _cntH:_cntL, 4
   mov XH, _cntH
   mov XL, _cntL
