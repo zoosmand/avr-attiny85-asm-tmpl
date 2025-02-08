@@ -33,19 +33,18 @@
 MAIN:
   rcall SLEEP_MODE
 
-  SCHEDULER SecCnt, 5, LedPrmBlue, LedReg, _BLAF_, _END_SCHED_01
-  _END_SCHED_01:
-    nop
+  SCHEDULER SecCnt, 4, LedBlueStack, _LUP_, LED_BLUE
+  SCHEDULER SecCnt, 5, LedGreenStack, _LUP_, LED_GREEN
+  SCHEDULER SecCnt, 3, LedRedStack, _LUP_, LED_RED
 
   rcall INC_QNT_CNT
-
-  rcall LED_BLUE
 
   rjmp MAIN
   rjmp THE_END
 
 .include "./inc/interrupts.inc"
 .include "./inc/utils.inc"
+.include "./inc/led.inc"
 
 
 ; --- Emergency Exit and Reboot

@@ -71,16 +71,12 @@
 
 
 ; --- Event REGistry Flag Definitions
-.equ _QIF_   = 0       ; System Quant Interval Flag
-.equ _SMF_   = 1       ; Sleep Mode Flag
+.equ _QIF_    = 0       ; System Quant Interval Flag
+.equ _SMF_    = 1       ; Sleep Mode Flag
 
-.equ _BLAF_  = 0       ; Blue LED Active Flag
-.equ _GLAF_  = 1       ; Green LED Active Flag
-.equ _RLAF_  = 2       ; Red LED Active Flag
-.equ _BLBF_  = 5       ; Blue LED Busy Flag
-.equ _GLBF_  = 6       ; Green LED Busy Flag
-.equ _RLBF_  = 7       ; Red LED Busy Flag
-
-.equ _LUF_   = 0       ; LED Up Flag
-.equ _LDF_   = 1       ; LED Down Flag
-.equ _LBF_   = 7       ; LED Busy Flag
+; LED manage commands
+.equ _LCMSK_  = 0b11111000  ; LED commands mask
+.equ _LUP_    = 0b00000001  ; Up a given LED
+.equ _LUC_    = 0b00000010  ; Check state while given LED is up
+.equ _LDW_    = 0b00000101  ; Down given LED
+.equ _LDC_    = 0b00000110  ; Check state while given LED is down

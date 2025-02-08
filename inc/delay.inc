@@ -9,32 +9,22 @@
 
 
 
-; --- Set pause
+; --- Sets pause
 ; 0 - sourse counter address
-; 1 - interval
-; 2 - threshold counter
+; 1 - threshold counter
 .MACRO DELAY
   ; Load source counter
-  ldd XH, @0+0
-  ldd XL, @0+1
+  ldi XH, high(@0)
+  ldi XL, low(@0)
   ld cntH, X+
   ld cntL, X
-  ; Load interval
-  ldd _cntH, @2+0
-  ldd _cntL, @2+1
-  ; Load threshold counter
-  ldd tmpH, @1+0
-  ldd tmpL, @1+1
+  ; Interval already loaded into tmpH:tmpL
   ; Set new threshold
-  clc
-  adc cntL, tmpL
-  in tmp, SREG
-  sbrc tmp, SREG_C
-  inc cntH
-  add cntH, tmpH
+  add cntL, tmpL
+  adc cntH, tmpH
   ; Store new threshold
-  std @2+0, cntH
-  std @2+1, cntL
+  std @1+0, cntH
+  std @1+1, cntL
 
 .ENDMACRO
 
@@ -44,22 +34,19 @@
 ; 0 - source counter address
 ; 1 - threshold counter
 ; 2 - exit link pause runs
-; 3 - exit link pause ends
 .MACRO DELAY_STATE
-  ; Load source counter
-  ldd XH, @0+0
-  ldd XL, @0+1
-  ld cntH, X+
-  ld cntL, X
   ; Load threshold counter
   ldd _cntH, @1+0
   ldd _cntL, @1+1
+  ; Load source counter
+  ldi XH, high(@0)
+  ldi XL, low(@0)
+  ld cntH, X+
+  ld cntL, X
   ; Compare counters
   cp cntL, _cntL
   brne @2 ; exit if not equal
   cp cntH, _cntH
   brne @2 ; exit if not equal
-
-  rjmp @3 ; exit if equal
 
 .ENDMACRO
