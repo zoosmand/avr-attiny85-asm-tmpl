@@ -7,7 +7,7 @@
 ; Author : Dmitry Slobodchikov
 ;
 
-.equ F_CPU = 16384000 ; CPU frequency defined as 16 MHz
+#define F_CPU 16384000 ; CPU frequency defined as 16 MHz
 
 ; --- Frequently used register definitions 
 .def dClock     = R12
@@ -25,12 +25,24 @@
 .def cntHL      = R24
 .def cntHH      = R25
 
+; --- LED
 .equ LEDDDR     = DDRB
 .equ LEDPORT    = PORTB
 .equ LEDPIN     = PINB
 .equ LEDBLUE    = PB1
 .equ LEDGREEN   = PB4
 .equ LEDRED     = PB3
+
+; --- I2C
+.equ I2CDDR     = DDRB
+.equ I2CPORT    = PORTB
+.equ I2CPIN     = PINB
+.equ SDA        = PB0
+.equ SCL        = PB2
+
+.equ _E         = 2
+.equ _Rw        = 1
+.equ _Rs        = 0
 
 
 ; --- Register name definitions
