@@ -53,7 +53,8 @@ INIT_MCU:
   out ACSR, tmp
 
   in tmp, PRR ; 7.5.2 p.38
-  sbr tmp, (1<<PRADC)|(1<<PRUSI)|(1<<PRTIM1)
+  sbr tmp, (1<<PRADC)|(1<<PRTIM1)
+  ; sbr tmp, (1<<PRADC)|(1<<PRUSI)|(1<<PRTIM1)
   out PRR, tmp
 
 ; --- Init Watchdog
@@ -97,5 +98,10 @@ INIT_I2C_MASTER:
   clr tmp
   sbr tmp, (1<<USISIF)|(1<<USIOIF)|(1<<USIPF)|(1<<USIDC)
   out USISR, tmp
+
+
+
+rcall INIT_1602A
+
 
 sei

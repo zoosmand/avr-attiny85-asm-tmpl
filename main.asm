@@ -25,6 +25,8 @@
 .include "./inc/macroses.inc"
 .include "./inc/delay.inc"
 .include "./inc/scheduler.inc"
+.include "./inc/i2c.inc"
+.include "./inc/display.inc"
 .include "./inc/init.inc"
 
 

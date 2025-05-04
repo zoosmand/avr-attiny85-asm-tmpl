@@ -62,36 +62,31 @@
   ldi _cntH, high(65535)
   ldi _cntL, low(65535)
 
-_SIMPLE_DELAY_CYCLE:
-  ; 1us on 8 MHz
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  #if F_CPU==16384000
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  nop
-  #endif
+  _SIMPLE_DELAY_CYCLE:
+    ; 1us on 8 MHz
+    nop
+    nop
+    nop
+    #if F_CPU==16 ; 1us on 16Mhz
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    #endif
 
-  ; Decrement counter
-  sbiw _cntH:_cntL, 1
-  cpi _cntL, 0
-  brne _SIMPLE_DELAY_CYCLE ; exit if positive
-  cpi _cntH, 0
-  brne _SIMPLE_DELAY_CYCLE ; exit if positive
+    ; Decrement counter
+    sbiw _cntH:_cntL, 1
+    cpi _cntL, 0
+    brne _SIMPLE_DELAY_CYCLE ; exit if positive
+    cpi _cntH, 0
+    brne _SIMPLE_DELAY_CYCLE ; exit if positive
 
-  pop _cntH
-  pop _cntL
+    pop _cntH
+    pop _cntL
 
 .ENDMACRO
