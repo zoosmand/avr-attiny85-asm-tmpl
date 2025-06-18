@@ -32,7 +32,7 @@ _WDT:
   reti
 
 
-; Timer0 Counter
+; --- Timer0 Counter
 _TIMER0_OVF:
   push R1
   push R0
