@@ -50,3 +50,45 @@
   brne @2 ; exit if not equal
 
 .ENDMACRO
+
+
+
+; --- Simple delay
+; 0 - counter value in us, or directly stored in R24:R25 regosters
+.MACRO SIMPLE_DELAY
+  push _cntL
+  push _cntH
+  .IF @0 > 0
+  ; Load source counter
+  ldi _cntH, high(@0)
+  ldi _cntL, low(@0)
+  .ENDIF
+
+  _SIMPLE_DELAY_CYCLE:
+    ; 1us on 8 MHz
+    nop
+    nop
+    nop
+    #if F_CPU==16 ; 1us on 16Mhz
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    ; nop
+    #endif
+
+    ; Decrement counter
+    sbiw _cntH:_cntL, 1
+    cpi _cntL, 0
+    brne _SIMPLE_DELAY_CYCLE ; exit if positive
+    cpi _cntH, 0
+    brne _SIMPLE_DELAY_CYCLE ; exit if positive
+
+    pop _cntH
+    pop _cntL
+
+.ENDMACRO

@@ -11,12 +11,44 @@
 
 ; --- Program data segment
 .cseg
-;  WH1602A_symb: .db "Hallo!!!"
 ;                   PIN             delup   deldw
 ;                   00              02      04
 LedBluePrm:     .dw (1<<LEDBLUE),   12,     25
 LedGreenPrm:    .dw (1<<LEDGREEN),  25,     25
 LedRedPrm:      .dw (1<<LEDRED),    25,     25
+
+
+A1602_init_bytes: .db 0x27, \
+  0x03, 0x10, 0x04, \
+  0x03, 0x10, 0x04, \
+  0x03, 0x00, 0x96, \
+  0x02, 0x05, 0xfa, \
+  0x28, 0x00, 0x27, \
+  0x0c, 0x00, 0x27, \
+  0x01, 0x05, 0xfa
+/*
+  0x27 - LCD WH1602 I2C address
+  0x03 - init command, delay 4.1ms (0x10, 0x04)
+  0x03 - init command, delay 4.1ms (0x10, 0x04)
+  0x03 - init command, delay 150us (0x00, 0x96)
+  0x02 - init command, delay 1.53ms (0x05, 0xfa)
+  0x28 - init command, delay 39us (0x00, 0x27)
+  0x0c - init command, delay 39us (0x00, 0x27)
+  0x01 - init command, delay 1.53ms (0x05, 0xfa)
+
+  0x03 - 4-bit initialization
+  0x02 - Cursor at the top-left position
+  0x28 - 4-bit bus, 2 lines display (1602 model)
+  0x0c - Allow output without cursor
+  0x01 - Clear display
+*/
+A1602_symb: .db "Hello!!!"
+/*
+	0x80 - Clear display
+	0x48 - H
+	0x54 - T
+	0x87 - R
+*/
 
 
 ; --- SRAM data segment
@@ -32,6 +64,8 @@ SecCnt:         .dw 0x0000
 ;                    00 01   02 03
 LedCache:       .dw 0x0000, 0x0000
 
+I2cReg:         .db 0x00
+DsplReg:        .db 0x00 
 ;                   schcnt  delcnt  cmd
 ;                    00 01   02 03   04 05
 .org 0x080

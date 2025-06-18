@@ -8,6 +8,8 @@
 ;
 
 ; --- Initiates/erases SRAM data by given address and the number of bytes to zero.
+; 0 - the beginning address of the data to clean
+; 1 - the number of bytes to clean
 .MACRO INIT_DATA
   clr R1
   ldi YH, high(@0)
@@ -23,6 +25,7 @@
 
 
 ; --- Increments counters by given address.
+; 0 - address of the counter
 .MACRO INC_CNT
   ldi YH, high(@0)
   ldi YL, low(@0)
@@ -37,3 +40,57 @@
   st -Y, tmpH
   
 .ENDMACRO
+
+
+; --- Sets a given flag into the register
+; 0 - register
+; 1 - flag
+.MACRO SET_FLAG
+  ldi XH, high(@0)
+  ldi XL, low(@0)
+  ld tmp, X
+  sbr tmp, (1<<@1)
+  st X, tmp
+
+.ENDMACRO
+
+
+; --- Clears a given flag from the register
+; 0 - register
+; 1 - flag
+.MACRO CLR_FLAG
+  ldi XH, high(@0)
+  ldi XL, low(@0)
+  ld tmp, X
+  cbr tmp, (1<<@1)
+  st X, tmp
+
+.ENDMACRO
+
+
+; --- Checks if a given flag has been set in the register
+; 0 - register
+; 1 - flag
+; 2 - Exit eddress when the is set
+.MACRO CHK_FLAG_SET
+  ldi XH, high(@0)
+  ldi XL, low(@0)
+  ld tmp, X
+  sbrc tmp, @1
+  rjmp @2
+.ENDMACRO
+
+
+; --- Checks if a given flag has not been set in the register
+; 0 - register
+; 1 - flag
+; 2 - Exit eddress when the is not set
+.MACRO CHK_FLAG_CLR
+  ldi XH, high(@0)
+  ldi XL, low(@0)
+  ld tmp, X
+  sbrs tmp, @1
+  rjmp @2
+
+.ENDMACRO
+

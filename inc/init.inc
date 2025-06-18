@@ -53,7 +53,8 @@ INIT_MCU:
   out ACSR, tmp
 
   in tmp, PRR ; 7.5.2 p.38
-  sbr tmp, (1<<PRADC)|(1<<PRUSI)|(1<<PRTIM1)
+  sbr tmp, (1<<PRADC)|(1<<PRTIM1)
+  ; sbr tmp, (1<<PRADC)|(1<<PRUSI)|(1<<PRTIM1)
   out PRR, tmp
 
 ; --- Init Watchdog
@@ -63,8 +64,6 @@ INIT_WATCHDOG:
   out WDTCR, tmp
   sbr tmp, (1<<WDP3)|(1<<WDP0)|(1<<WDIE) ; 8s
   out WDTCR, tmp
-
-sei
 
 
 ; --- Init LEDs
@@ -85,3 +84,24 @@ INIT_LED:
   #endif
 
 
+; Init I2C
+INIT_I2C_MASTER:
+  sbi I2CPORT, SDA
+  sbi I2CPORT, SCL
+  sbi I2CDDR, SDA
+  sbi I2CDDR, SCL
+  ser tmp
+  out USIDR, tmp
+  clr tmp
+  sbr tmp, (1<<USIWM1)|(1<<USICS1)|(1<<USICLK)
+  out USICR, tmp
+  clr tmp
+  sbr tmp, (1<<USISIF)|(1<<USIOIF)|(1<<USIPF)|(1<<USIDC)
+  out USISR, tmp
+
+
+
+rcall INIT_1602A
+
+
+sei
