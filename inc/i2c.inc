@@ -9,8 +9,6 @@
 
 ; --- I2C Start Condition
 I2CM_START:
-  push tmp
-
   sbi I2CPORT, SCL
   nop
   nop
@@ -27,15 +25,11 @@ I2CM_START:
   in tmp, USISR
   sbr tmp, (1<<USISIF)
   out USISR, tmp
-
-  pop tmp
   ret
 
 
 ; --- I2C Stop Condition
 I2CM_STOP:
-  push tmp
-
   cbi I2CPORT, SDA
   sbi I2CPORT, SCL
   _I2CM_WAIT_SCK_HIGH:
@@ -53,15 +47,11 @@ I2CM_STOP:
   in tmp, USISR
   sbr tmp, (1<<USIPF)
   out USISR, tmp
-
-  pop tmp
   ret
 
 
 ; --- I2C Transfer
 I2CM_TRANSFER:
-  push tmp
-
   in tmp, USICR
   sbr tmp, (1<<USITC)
   _I2CM_TRANSFER_START:
@@ -89,37 +79,27 @@ I2CM_TRANSFER:
   ser tmp
   out USIDR, tmp
   sbi I2CDDR, SDA
-
-  pop tmp
   ret
 
 
 
 ; --- I2C Transfer Buffer
 I2CM_TRANSFER_BUFFER:
-  push tmp
-
   cbi I2CPORT, SCL
   in tmp, USISR
   sbr tmp, (1<<USIOIF)
   cbr tmp, (0xe<<USICNT0)
   out USISR, tmp
   rcall I2CM_TRANSFER
-
-  pop tmp
   ret
 
 ; --- I2C Transfer ACK/NACK
 I2CM_TRANSFER_ACK:
-  push tmp
-
   cbi I2CDDR, SDA ; Input
   in tmp, USISR
   sbr tmp, (1<<USIOIF)|(0xe<<USICNT0)
   out USISR, tmp
   rcall I2CM_TRANSFER
-
-  pop tmp
   ret
 
 
@@ -127,9 +107,7 @@ I2CM_TRANSFER_ACK:
 ; --- I2C Send Slave Address
 I2CM_SEND_ADDRESS:
   lsl txByte
-  ; sbrs _EREG_, _I2CRWF_
-  ; rjmp _I2CM_SEND_ADDRESS
-  CHK_FLAG_SET I2cReg, _I2CRWF_, _I2CM_SEND_ADDRESS
+  CHK_FLAG_CLR I2cReg, _I2CRWF_, _I2CM_SEND_ADDRESS
   sbr txByte, (1<<0) ; 0 - write byte, 1 - read byte
 
   _I2CM_SEND_ADDRESS: 
@@ -138,7 +116,6 @@ I2CM_SEND_ADDRESS:
     rcall I2CM_TRANSFER_ACK
     sbic USIDR, 0
     rjmp _I2CM_SEND_ADDRESS_EXIT
-    ; sbr _EREG_, (1<<_I2CERF_)
     SET_FLAG I2cReg, _I2CERF_
     rcall I2CM_STOP
 
@@ -153,7 +130,6 @@ I2CM_SEND_PACKET:
   rcall I2CM_TRANSFER_ACK
   sbic USIDR, 0
   rjmp _I2CM_SEND_PACKET_EXIT
-  ; sbr _EREG_, (1<<_I2CERF_)
   SET_FLAG I2cReg, _I2CERF_
   rcall I2CM_STOP
 

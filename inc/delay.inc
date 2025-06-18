@@ -54,13 +54,15 @@
 
 
 ; --- Simple delay
-; 0 - counter value in us
+; 0 - counter value in us, or directly stored in R24:R25 regosters
 .MACRO SIMPLE_DELAY
   push _cntL
   push _cntH
+  .IF @0 > 0
   ; Load source counter
-  ldi _cntH, high(65535)
-  ldi _cntL, low(65535)
+  ldi _cntH, high(@0)
+  ldi _cntL, low(@0)
+  .ENDIF
 
   _SIMPLE_DELAY_CYCLE:
     ; 1us on 8 MHz
@@ -76,7 +78,7 @@
     nop
     nop
     nop
-    nop
+    ; nop
     #endif
 
     ; Decrement counter

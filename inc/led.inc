@@ -276,12 +276,12 @@ LED_DOWN_DELAY:
 ; --- Simple LED Toogle for tests
 LED0_BLINK:
   _IF_01:
-    sbis LEDPIN, LEDRED
+    sbis LEDPIN, LEDGREEN
     rjmp _LED0PIN_H
     _LED0PIN_L:
-    cbi LEDPORT, LEDRED
+    cbi LEDPORT, LEDGREEN
     rjmp _ENDIF_01
     _LED0PIN_H:
-    sbi LEDPORT, LEDRED
+    sbi LEDPORT, LEDGREEN
   _ENDIF_01:
   ret

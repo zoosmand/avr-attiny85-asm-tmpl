@@ -30,6 +30,9 @@
 .include "./inc/init.inc"
 
 
+
+
+  rcall SEND_HALLO
  
 ; --- Main workflow
 MAIN:

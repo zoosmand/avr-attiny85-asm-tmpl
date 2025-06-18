@@ -46,15 +46,12 @@
 ; 0 - register
 ; 1 - flag
 .MACRO SET_FLAG
-  push tmp
-
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld tmp, X
   sbr tmp, (1<<@1)
   st X, tmp
 
-  pop tmp
 .ENDMACRO
 
 
@@ -62,15 +59,12 @@
 ; 0 - register
 ; 1 - flag
 .MACRO CLR_FLAG
-  push tmp
-
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld tmp, X
   cbr tmp, (1<<@1)
   st X, tmp
 
-  pop tmp
 .ENDMACRO
 
 
@@ -79,15 +73,11 @@
 ; 1 - flag
 ; 2 - Exit eddress when the is set
 .MACRO CHK_FLAG_SET
-  push tmp
-
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld tmp, X
-  sbrs tmp, (1<<@1)
+  sbrc tmp, @1
   rjmp @2
-
-  pop tmp
 .ENDMACRO
 
 
@@ -96,15 +86,11 @@
 ; 1 - flag
 ; 2 - Exit eddress when the is not set
 .MACRO CHK_FLAG_CLR
-  push tmp
-
   ldi XH, high(@0)
   ldi XL, low(@0)
   ld tmp, X
-  sbrc tmp, (1<<@1)
+  sbrs tmp, @1
   rjmp @2
 
-  pop tmp
 .ENDMACRO
-
 

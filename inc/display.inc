@@ -8,7 +8,6 @@
 ;
 
 INIT_1602A:
-  ; initial delay 50ms
   SIMPLE_DELAY 50000
 
   ldi ZH, high(2*A1602_init_bytes)
@@ -16,47 +15,41 @@ INIT_1602A:
   ldi tmp, 0x07
   mov R0, tmp
   lpm tmp, Z+
+  mov R1, tmp ; Keep address in the R1 register
   
   _INIT_1602A_BYTE:
     rcall I2CM_START
-    rcall A1602_SEND_ADDRESS
+    mov txByte, R1
+    rcall I2CM_SEND_ADDRESS
     lpm txByte, Z+
     rcall A1602_SEND_COMMAND
     rcall I2CM_STOP
+    ; Initialization proces requires a specific delay after every command
+    ; which are sent to the dosplay
     lpm _cntH, Z+
     lpm _cntL, Z+
-    SIMPLE_DELAY
+    SIMPLE_DELAY 0
     dec R0
     brne _INIT_1602A_BYTE
+    ret
 
-  ret
-
-
-; --- 1602A Send Address
-A1602_SEND_ADDRESS:
-  mov txByte, tmp ; tmp (r16) carring the I2C device address
-  rcall I2CM_SEND_ADDRESS
-  ret
 
 ; --- 1602A Send Half Byte
 A1602_SEND_NIBBLE:
   andi txByte, 0xf0
-  ; sbrc _EREG_, _1602RSF_
   CHK_FLAG_CLR DsplReg, _1602RSF_, _1602A_SEND_E
-  ; sbr txByte, (1<<_Rs)
-  SET_FLAG DsplReg, _Rs
+  sbr txByte, (1<<_Rs)
   _1602A_SEND_E:
-  ; sbr txByte, (1<<_E)
-  SET_FLAG DsplReg, _E
-  rjmp _1602A_SEND_NIBBLE_DATA
+    sbr txByte, (1<<_E)
+    rjmp _1602A_SEND_NIBBLE_DATA
   _1602A_SEND_NIBBLE_ACK:
     cbr txByte, (1<<_E)
   _1602A_SEND_NIBBLE_DATA:
     rcall I2CM_SEND_PACKET
-  sbrc txByte, _E
-  rjmp _1602A_SEND_NIBBLE_ACK
-  ret
-  
+    sbrc txByte, _E
+    rjmp _1602A_SEND_NIBBLE_ACK
+    ret
+    
 ; --- 1602A Send Packet
 A1602_SEND_PACKET:
   push R0
@@ -72,14 +65,52 @@ A1602_SEND_PACKET:
 
 ; --- 1602A Send Command
 A1602_SEND_COMMAND:
-  ; cbr _EREG_, (1<<_1602RSF_)
   CLR_FLAG DsplReg, _1602RSF_
   rcall A1602_SEND_PACKET
   ret
 
 ; --- 1602A Send Data
 A1602_SEND_DATA:
-  ; sbr _EREG_, (1<<_1602RSF_)
   SET_FLAG DsplReg, _1602RSF_
   rcall A1602_SEND_PACKET
   ret
+
+
+; --------------------------------------------------------------
+; --------------------------------------------------------------
+; --------------------------------------------------------------
+; --------------------------------------------------------------
+; --------------------------------------------------------------
+SEND_HALLO:
+
+  ldi ZH, high(2*A1602_init_bytes)
+  ldi ZL, low(2*A1602_init_bytes)
+  lpm tmp, Z
+  mov R1, tmp 
+
+  rcall I2CM_START
+  mov txByte, R1
+  rcall I2CM_SEND_ADDRESS
+
+  ldi txByte, 0x02
+  rcall A1602_SEND_COMMAND
+  rcall I2CM_STOP
+  SIMPLE_DELAY 1530
+
+  ldi ZH, high(2*A1602_symb)
+  ldi ZL, low(2*A1602_symb)
+  ldi tmp, 0x08
+  mov R0, tmp
+
+  _SEND_HALLO_BYTE:
+    rcall I2CM_START
+    mov txByte, R1
+    rcall I2CM_SEND_ADDRESS
+
+    lpm txByte, Z+
+    rcall A1602_SEND_DATA
+    rcall I2CM_STOP
+    SIMPLE_DELAY 39
+    dec R0
+    brne _SEND_HALLO_BYTE
+    ret
