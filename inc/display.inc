@@ -8,6 +8,12 @@
 ;
 
 INIT_1602A:
+  ; Clear 1602A Display Register
+  ldi XH, high(DsplReg)
+  ldi XL, low(DsplReg)
+  clr tmp
+  st X, tmp
+
   SIMPLE_DELAY 50000
 
   ldi ZH, high(2*A1602_init_bytes)

@@ -31,27 +31,27 @@ LED_BLUE:
   ret
 
 
-; --- Runs Green LED routine
-LED_GREEN:
-  ; write Green Led parameter address onto cache
-  ldi ZH, high(2*LedGreenPrm)
-  ldi ZL, low(2*LedGreenPrm)
-  mov tmpH, ZH
-  mov tmpL, ZL
-  ldi YH, high(LedCache)
-  ldi YL, low(LedCache)
-  st Y+, tmpH
-  st Y+, tmpL
-  ; write Green Led stack address onto cache
-  ldi ZH, high(LedGreenStack)
-  ldi ZL, low(LedGreenStack)
-  mov tmpH, ZH
-  mov tmpL, ZL
-  st Y+, tmpH
-  st Y, tmpL
-  ; run Led routine
-  rcall LED
-  ret
+; ; --- Runs Green LED routine
+; LED_GREEN:
+;   ; write Green Led parameter address onto cache
+;   ldi ZH, high(2*LedGreenPrm)
+;   ldi ZL, low(2*LedGreenPrm)
+;   mov tmpH, ZH
+;   mov tmpL, ZL
+;   ldi YH, high(LedCache)
+;   ldi YL, low(LedCache)
+;   st Y+, tmpH
+;   st Y+, tmpL
+;   ; write Green Led stack address onto cache
+;   ldi ZH, high(LedGreenStack)
+;   ldi ZL, low(LedGreenStack)
+;   mov tmpH, ZH
+;   mov tmpL, ZL
+;   st Y+, tmpH
+;   st Y, tmpL
+;   ; run Led routine
+;   rcall LED
+;   ret
 
 
 ; --- Runs Red LED routine
@@ -276,12 +276,12 @@ LED_DOWN_DELAY:
 ; --- Simple LED Toogle for tests
 LED0_BLINK:
   _IF_01:
-    sbis LEDPIN, LEDGREEN
+    sbis LEDPIN, LEDBLUE
     rjmp _LED0PIN_H
     _LED0PIN_L:
-    cbi LEDPORT, LEDGREEN
+    cbi LEDPORT, LEDBLUE
     rjmp _ENDIF_01
     _LED0PIN_H:
-    sbi LEDPORT, LEDGREEN
+    sbi LEDPORT, LEDBLUE
   _ENDIF_01:
   ret

@@ -14,7 +14,7 @@
 ;                   PIN             delup   deldw
 ;                   00              02      04
 LedBluePrm:     .dw (1<<LEDBLUE),   12,     25
-LedGreenPrm:    .dw (1<<LEDGREEN),  25,     25
+; LedGreenPrm:    .dw (1<<LEDGREEN),  25,     25
 LedRedPrm:      .dw (1<<LEDRED),    25,     25
 
 
@@ -64,8 +64,15 @@ SecCnt:         .dw 0x0000
 ;                    00 01   02 03
 LedCache:       .dw 0x0000, 0x0000
 
+; --- I2C Register
 I2cReg:         .db 0x00
-DsplReg:        .db 0x00 
+
+; --- 1602A Display Reginster
+DsplReg:        .db 0x00
+
+; --- One Wire Register
+OwmReg:         .db 0x00
+
 ;                   schcnt  delcnt  cmd
 ;                    00 01   02 03   04 05
 .org 0x080

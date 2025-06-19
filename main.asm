@@ -30,16 +30,16 @@
 .include "./inc/init.inc"
 
 
-
-
-  rcall SEND_HALLO
+; --- Initialization 1602A Display
+rcall INIT_1602A
+rcall SEND_HALLO
  
 ; --- Main workflow
 MAIN:
   rcall SLEEP_MODE
 
   SCHEDULER SecCnt, 4, LedBlueStack, _LUP_, LED_BLUE
-  SCHEDULER SecCnt, 5, LedGreenStack, _LUP_, LED_GREEN
+  ; SCHEDULER SecCnt, 5, LedGreenStack, _LUP_, LED_GREEN
   SCHEDULER SecCnt, 3, LedRedStack, _LUP_, LED_RED
 
   rcall INC_QNT_CNT

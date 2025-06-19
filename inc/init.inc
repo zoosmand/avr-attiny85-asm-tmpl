@@ -73,10 +73,10 @@ INIT_LED:
   sbi LEDPORT, LEDBLUE
   #endif
 
-  sbi LEDDDR, LEDGREEN
-  #if _LEDGREEN_PD_
-  sbi LEDPORT, LEDGREEN
-  #endif
+  ; sbi LEDDDR, LEDGREEN
+  ; #if _LEDGREEN_PD_
+  ; sbi LEDPORT, LEDGREEN
+  ; #endif
   
   sbi LEDDDR, LEDRED
   #if _LEDRED_PD_
@@ -84,7 +84,7 @@ INIT_LED:
   #endif
 
 
-; Init I2C
+; --- Init I2C Master
 INIT_I2C_MASTER:
   sbi I2CPORT, SDA
   sbi I2CPORT, SCL
@@ -99,9 +99,25 @@ INIT_I2C_MASTER:
   sbr tmp, (1<<USISIF)|(1<<USIOIF)|(1<<USIPF)|(1<<USIDC)
   out USISR, tmp
 
+  ; Clear I2C Register
+  ldi XH, high(I2cReg)
+  ldi XL, low(I2cReg)
+  clr tmp
+  st X, tmp
 
 
-rcall INIT_1602A
+
+; --- Init One Wire Master
+INIT_OWM:
+  cbi OWMAPORT, OWMA0PIN
+  cbi OWMADDR, OWMA0PIN
+
+  ; Clear One Wire Register
+  ldi XH, high(OwmReg)
+  ldi XL, low(OwmReg)
+  clr tmp
+  st X, tmp
+
 
 
 sei
